@@ -1,0 +1,72 @@
+{
+  "name": "loomcal",
+  "version": "1.0.0",
+  "description": "Modern TypeScript SDK for LoomCal API - flexible event tracking for any action, commitment, or activity",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup index.ts --format cjs,esm --dts",
+    "dev": "tsup index.ts --format cjs,esm --dts --watch",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "loomcal",
+    "event-tracking",
+    "neploom",
+    "neploom-sdk",
+    "api-sdk",
+    "typescript",
+    "react",
+    "calendar",
+    "scheduling",
+    "webhooks",
+    "analytics"
+  ],
+  "author": "Enfiniq <enfiniq@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enfiniq/loomcal.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://loomcal.vercel.app",
+  "bugs": {
+    "url": "https://github.com/enfiniq/loomcal/issues"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "axios": "^1.7.9"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
