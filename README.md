@@ -230,6 +230,7 @@ const [newUser, userEvents] = await client
 
 ## 📖 Documentation
 [📖 **Partial SDK Documentation →**](/src/sdk/README.md)
+---
 [📖 **Full SDK Documentation →**](https://docs.loomcal.neploom.com)
 
 ## 🤖 Bot Integration
@@ -241,7 +242,7 @@ Add the LoomCal bot to your Slack workspace for quick event management:
 ```
 
 ### Telegram Bot
-Start a conversation with `@LoomCalBot` and manage your events on the go.
+Start a conversation with `[@LoomCalBot](https://t.me/LoomCalBot)` and manage your events on the go.
 
 ### Discord Bot
 Invite the LoomCal bot to your Discord server for team event coordination.
@@ -357,8 +358,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Contributors
 
-- **Enfiniq** — SDK, API, and APP development
-- **AI** — Helped with README generation, copy writing, and adding comments
+- **Enfiniq** — SDK, API, Telegram Bot and APP development
+- **AI** — Helped with README generation, copy writing, adding comments, regex, and constants
 
 ## 🙏 Acknowledgments
 
