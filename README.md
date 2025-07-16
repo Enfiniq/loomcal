@@ -39,10 +39,26 @@ LoomCal is built with a modular, scalable architecture designed for modern appli
 ## ✨ Core Features
 
 ### 🎯 **Flexible Event Model**
-- **Universal Events**: Track any action, commitment, or activity
-- **Rich Metadata**: Custom fields, resources, and contextual data
-- **User Relationships**: Link events to users with `linkedUserId` support
-- **Time Tracking**: Precise start/end times with timezone support
+- **Universal Events**:
+  - Track any action, commitment, or activity
+  - Extensible event types system
+  - Custom event hierarchies
+  - Event relationship mapping
+- **Rich Metadata**:
+  - Structured custom fields with validation
+  - Resource attachments and references
+  - Contextual data with inheritance
+  - Dynamic schema evolution
+- **User Relationships**:
+  - Multi-user event associations
+  - Role-based event access
+  - User group hierarchies
+  - `linkedUserId` system for external integrations
+- **Time Tracking**:
+  - Precise start/end times with microsecond accuracy
+  - Timezone-aware scheduling
+  - Recurring event patterns
+  - Duration-based calculations
 
 ### � **Enterprise Security**
 - **API Key Management**: Secure authentication with scope control
@@ -51,10 +67,22 @@ LoomCal is built with a modular, scalable architecture designed for modern appli
 - **Data Isolation**: Multi-tenant architecture with organization boundaries
 
 ### ⚡ **High Performance**
-- **Bulk Operations**: Process thousands of events in single requests
-- **Query Optimization**: MongoDB-style operators ($and, $or, $in, $exists)
-- **Database Efficiency**: PostgreSQL stored procedures for complex operations
-- **Intelligent Caching**: Optimized data retrieval and updates
+- **Bulk Operations**: Process thousands of events in single requests with automatic batching
+- **Query Optimization**: 
+  - MongoDB-style operators ($and, $or, $in, $exists, $regex)
+  - Compound queries with nested operators
+  - Automatic index utilization
+  - Query plan optimization
+- **Database Efficiency**: 
+  - Optimized PostgreSQL stored procedures
+  - Parallel query execution
+  - Connection pooling
+  - Prepared statements
+- **Intelligent Caching**: 
+  - Multi-level cache architecture
+  - Redis integration for distributed caching
+  - Cache invalidation strategies
+  - Automatic cache warming
 
 ### � **Seamless Integrations**
 - **SDK-First Design**: TypeScript SDK with React components
@@ -92,22 +120,35 @@ cp .env.example .env.local
 
 Edit `.env.local` with your configuration:
 ```env
-# Database
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+# ================================
+# LoomCal Environment Configuration
+# ================================
 
-# NextAuth.js
-NEXTAUTH_SECRET=your_nextauth_secret
+
+# LoomCal API configuration
+NEXT_PUBLIC_LOOMCAL_BASE_URL=https://loomcal.neploom.com
+LOOMCAL_API_KEY=lc_your_loomcal_api_key_here
+
+# Supabase configuration
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# NextAuth.js secret for session encryption (generate: openssl rand -base64 32)
+NEXTAUTH_SECRET=your_nextauth_secret_here
+
+# Your application URL (production URL or http://localhost:3000 for development)
 NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_ADMIN_SECRET=your_admin_secret_here
+
+# Base URL for API calls and redirects
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
-# LoomCal Configuration
+# Allowed origins for CORS (comma-separated, no spaces)
 ALLOWED_ORIGINS=http://localhost:3000
+
+# Secret key for API key encryption/decryption (generate: openssl rand -hex 32)
 API_KEY_SECRET=your_api_key_encryption_secret_here
-NEXT_PUBLIC_LOOMCAL_BASE_URL=https://loomcal.neploom.com
-NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 4. **Set up the database:**
@@ -127,38 +168,68 @@ npm run dev
 Install the LoomCal SDK in your project:
 
 ```bash
-npm install loomcal
+npm install @neploom/loomcal
 ```
 
 ### Basic Usage
 
 ```typescript
-import { LoomCal } from 'loomcal';
+import { LoomCal } from '@neploom/loomcal';
 
 const client = new LoomCal({
   apiKey: 'lc_your_api_key_here',
   baseUrl: 'https://your-loomcal-instance.com'
 });
 
-// Track any event
+// Basic event tracking
 await client.createEvents({
   event: {
     title: 'User Completed Onboarding',
     type: 'milestone',
-    user: { identifier: 'user123@example.com' }
+    user: { identifier: 'user123@example.com' },
+    customData: {
+      feature: 'onboarding',
+      completionTime: 180, // seconds
+      steps: ['welcome', 'profile', 'preferences']
+    }
   }
-});
+}).execute();
 
-// Query events with powerful filters
+// Advanced querying with MongoDB-style operators
 const events = await client.getEvents({
   target: {
-    type: 'milestone',
-    createdAt: { $gte: '2024-01-01T00:00:00Z' }
+    $and: [
+      { type: 'milestone' },
+      { 'customData.feature': 'onboarding' },
+      { createdAt: { $gte: '2024-01-01T00:00:00Z' } },
+      { 'customData.completionTime': { $lte: 300 } }
+    ]
   },
-  options: { limit: 50, sortBy: 'createdAt' }
-});
+  options: { 
+    limit: 50, 
+    sortBy: 'createdAt',
+    sortOrder: 'desc'
+  }
+}).execute();
+
+// Method chaining for complex operations
+const [newUser, userEvents] = await client
+  .createUsers({
+    user: {
+      identifier: 'user123',
+      email: 'user@example.com',
+      customData: { role: 'admin' }
+    }
+  })
+  .getEvents({
+    target: { 'user.identifier': 'user123' },
+    options: { limit: 10 }
+  })
+  .execute();
 ```
 
+## 📖 Documentation
+[📖 **Partial SDK Documentation →**](/src/sdk/README.md)
 [📖 **Full SDK Documentation →**](https://docs.loomcal.neploom.com)
 
 ## 🤖 Bot Integration
@@ -182,16 +253,34 @@ Invite the LoomCal bot to your Discord server for team event coordination.
 Create a `.env.local` file in your project root:
 
 ```bash
-LOOMCAL_API_KEY=lc_your-api-key
+# ================================
+# LoomCal Environment Configuration
+# ================================
+
+
+# LoomCal API configuration
 NEXT_PUBLIC_LOOMCAL_BASE_URL=https://loomcal.neploom.com
-# If you're self-hosting, set your Supabase URL and keys
+LOOMCAL_API_KEY=lc_your_loomcal_api_key_here
+
+# Supabase configuration
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_hereNEXTAUTH_SECRET=your_nextauth_secret_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# NextAuth.js secret for session encryption (generate: openssl rand -base64 32)
+NEXTAUTH_SECRET=your_nextauth_secret_here
+
+# Your application URL (production URL or http://localhost:3000 for development)
 NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_ADMIN_SECRET=your_admin_secret_here
+
+# Base URL for API calls and redirects
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Allowed origins for CORS (comma-separated, no spaces)
 ALLOWED_ORIGINS=http://localhost:3000
+
+# Secret key for API key encryption/decryption (generate: openssl rand -hex 32)
 API_KEY_SECRET=your_api_key_encryption_secret_here
 ```
 
@@ -216,13 +305,13 @@ npm start
 LoomCal provides reusable components for integration:
 
 ```jsx
-import { LoomCalProvider } from 'loomcal';
+import { LoomCalProvider } from '@neploom/loomcal';
 
 function Layout({ children }) {
   return (
     <div>
       <LoomCalProvider config={{
-        apiKey: process.env.NEXT_PUBLIC_LOOMCAL_API_KEY!,
+        apiKey: process.env.LOOMCAL_API_KEY!,
         baseUrl: process.env.NEXT_PUBLIC_LOOMCAL_BASE_URL!
       }}>
         {children}

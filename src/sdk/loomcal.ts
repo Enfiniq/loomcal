@@ -15,10 +15,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import {
   LoomCalConfig,
-  PaginatedResponse,
   ApiResponse,
   LoomCalError,
-  // New chainable types
   CreateEventItem,
   GetEventItem,
   UpdateEventItem,
@@ -35,12 +33,7 @@ import {
 } from "./types";
 
 // Import options merging utilities
-import {
-  mergeCreateOptions,
-  mergeOptions,
-  validateSavingRule,
-  validateSignedConfig,
-} from "./defaults";
+import { mergeCreateOptions } from "./defaults";
 
 // ===== CHAINABLE OPERATION QUEUE =====
 class OperationQueue {
@@ -84,20 +77,14 @@ export class LoomCal {
 
     this.config = {
       apiKey: config.apiKey,
-      baseUrl:
-        config.baseUrl ||
-        process.env.NEXT_PUBLIC_LOOMCAL_BASE_URL ||
-        "https://loomcal.neploom.com",
+      baseUrl: config.baseUrl || "https://loomcal.neploom.com",
       timeout: config.timeout || 30000,
       retries: config.retries || 3,
       debug: config.debug || false,
     };
 
     this.client = axios.create({
-      baseURL:
-        this.config.baseUrl === "https://loomcal.neploom.com"
-          ? "https://api.loomcal.neploom.com"
-          : `${this.config.baseUrl}/api`,
+      baseURL: `${this.config.baseUrl}/api`,
       timeout: this.config.timeout,
       headers: {
         "Content-Type": "application/json",

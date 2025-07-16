@@ -1,18 +1,17 @@
 {
-  "name": "loomcal",
+  "name": "@neploom/loomcal",
   "version": "1.0.0",
   "description": "Modern TypeScript SDK for LoomCal API - flexible event tracking for any action, commitment, or activity",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/loomcal.js",
+  "module": "dist/loomcal.js",
+  "types": "dist/loomcal.d.ts",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup index.ts --format cjs,esm --dts",
-    "dev": "tsup index.ts --format cjs,esm --dts --watch",
+    "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build",
     "test": "jest",
     "lint": "eslint src --ext .ts,.tsx",
@@ -20,6 +19,8 @@
   },
   "keywords": [
     "loomcal",
+    "loomcal-sdk",
+    "@neploom/loomcal",
     "event-tracking",
     "neploom",
     "neploom-sdk",
@@ -38,7 +39,7 @@
     "url": "https://github.com/enfiniq/loomcal.git",
     "directory": "packages/sdk"
   },
-  "homepage": "https://loomcal.vercel.app",
+  "homepage": "https://loomcal.neploom.com",
   "bugs": {
     "url": "https://github.com/enfiniq/loomcal/issues"
   },

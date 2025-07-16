@@ -1,6 +1,6 @@
 # 🗓️ LoomCal SDK
 
-[![npm version](https://badge.fury.io/js/loomcal.svg)](https://badge.fury.io/js/loomcal)
+[![npm version](https://badge.fury.io/js/loomcal.svg)](https://badge.fury.io/js/@neploom/loomcal)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -41,7 +41,7 @@ await client.createEvents({
     },
     user: { identifier: "student123" }
   }
-});
+}).execute();
 
 // Query learning analytics
 const progress = await client.getEvents({
@@ -50,7 +50,7 @@ const progress = await client.getEvents({
     type: "course-completion"
   },
   options: { sortBy: "createdAt", sortOrder: "desc" }
-});
+}).execute();
 ```
 
 ### 🏃‍♂️ Fitness & Health Tracking
@@ -72,7 +72,7 @@ await client.createEvents([
       user: { identifier: "athlete@example.com" }
     }
   }
-]);
+]).execute();
 
 // Track weekly fitness goals
 const weeklyWorkouts = await client.getEvents({
@@ -80,7 +80,7 @@ const weeklyWorkouts = await client.getEvents({
     type: "workout",
     createdAt: { $gte: "2024-01-15T00:00:00Z" }
   }
-});
+}).execute();
 ```
 
 ### 🎮 Gaming & Achievements
@@ -98,7 +98,7 @@ await client.createEvents({
     },
     user: { identifier: "gamer_pro_2024" }
   }
-});
+}).execute();
 ```
 
 ### 📊 Business Process Tracking
@@ -117,7 +117,7 @@ await client.createEvents({
     },
     user: { identifier: "support@company.com" }
   }
-});
+}).execute();
 ```
 
 ---
@@ -127,17 +127,17 @@ await client.createEvents({
 ### Installation
 
 ```bash
-npm install loomcal
+npm install @neploom/loomcal
 # or
-yarn add loomcal
+yarn add @neploom/loomcal
 # or
-pnpm add loomcal
+pnpm add @neploom/loomcal
 ```
 
 ### Basic Usage
 
 ```typescript
-import { LoomCal } from 'loomcal';
+import { LoomCal } from '@neploom/loomcal';
 
 // Initialize client with your API key
 const client = new LoomCal({
@@ -146,7 +146,7 @@ const client = new LoomCal({
   debug: true // Optional: enable request logging
 });
 
-// Create a single event
+// Create a single event with .execute()
 const event = await client.createEvents({
   event: {
     title: 'User Completed Onboarding',
@@ -154,17 +154,48 @@ const event = await client.createEvents({
     customData: { step: 'welcome-tour', completionRate: 100 },
     user: { identifier: 'user123@example.com' }
   }
-});
+}).execute(); // Single operation execution
 
-// Create multiple events in batch
+// Create multiple events in batch with a single API call
 const batchResult = await client.createEvents([
   { event: { title: 'Event 1', user: { identifier: 'user1' } } },
   { event: { title: 'Event 2', user: { identifier: 'user2' } } }
-]);
+]).execute(); // Will execute both operations in one request
 
 console.log('Event created:', event);
 console.log('Batch result:', batchResult);
 ```
+
+---
+
+## 🏗️ Self-Hosting Guide
+
+### Requirements
+
+1. **API Route Setup**
+   - Create a POST endpoint at `/api/operations/bulk`
+   - This endpoint must be running whenever the SDK is in use
+   - Handles all SDK operations (events, users, etc.)
+
+2. **Database Setup**
+   - Deploy the provided SQL schema to your Supabase project
+   - Deploy stored procedures for efficient data operations
+   - Required Supabase credentials:
+     ```env
+     NEXT_PUBLIC_SUPABASE_URL=your_project_url
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+     SUPABASE_SERVICE_ROLE_KEY=your_role_key
+     ```
+
+3. **SDK Configuration**
+   ```typescript
+   const client = new LoomCal({
+     apiKey: 'your_api_key',
+     baseUrl: 'https://your-domain.com', // Points to your /api/operations/bulk endpoint
+   });
+   ```
+
+**Note:** Ensure your `/api/operations/bulk` endpoint is always available as it's critical for SDK functionality.
 
 ---
 
@@ -178,7 +209,7 @@ interface LoomCalConfig {
   baseUrl?: string;         // Optional: Custom API endpoint
   timeout?: number;         // Optional: Request timeout (default: 30000ms)
   retries?: number;         // Optional: Retry attempts (default: 3)
-  debug?: boolean;          // Optional: Enable debug logging (default: false)setups
+  debug?: boolean;          // Optional: Enable debug logging (default: false)
 }
 ```
 
@@ -236,7 +267,7 @@ const result = await client.createEvents({
       onDuplicate?: 'update' | 'ignore' | 'reject'; // Action on duplicate
     };
   }
-});
+}).execute();
 ```
 
 **Batch Event Creation:**
@@ -257,8 +288,8 @@ const results = await client.createEvents([
       uniquenessFields?: string[] | UniquenessCriteria; // Fields to check
       onDuplicate?: 'update' | 'ignore' | 'reject'; // Action on duplicate
     };
-  };            
-}
+  };
+}).execute();
 
 ```
 
@@ -278,7 +309,7 @@ const events = await client.getEvents({
     sortBy: "createdAt",
     sortOrder: "desc"
   }
-});
+}).execute();
 
 // Complex query with operators
 const filteredEvents = await client.getEvents({
@@ -290,7 +321,7 @@ const filteredEvents = await client.getEvents({
     ]
   },
   options: { limit: 100 }
-});
+}).execute();
 
 // Available operators: $and, $or, $not, $in, $nin, $exists, $gte, $lte, $gt, $lt, $regex
 ```
@@ -314,7 +345,7 @@ const updated = await client.updateEvents({
     }
   },
   options: { limit: 100 }
-});
+}).execute();
 ```
 
 #### `deleteEvents(criteria, options?)`
@@ -329,7 +360,7 @@ const deleted = await client.deleteEvents({
     "customData.temporary": true
   },
   options: { limit: 50 } // Safety limit
-});
+}).execute();
 ```
 
 ### 👥 User Operations
@@ -353,12 +384,13 @@ const user = await client.createUsers({
     }
   },
   options: { isSigned: false }
-});
+}).execute();
 
 // Batch user creation
 const users = await client.createUsers([
   { user: { identifier: "user1", email: "user1@example.com" } },
   { user: { identifier: "user2", email: "user2@example.com" } }
+]).execute();
 ]);
 ```
 
@@ -374,7 +406,7 @@ const engineeringUsers = await client.getUsers({
     linkedUserId: { $exists: true }
   },
   options: { sortBy: "name", limit: 50 }
-});
+}).execute();
 
 // Complex user queries
 const activeUsers = await client.getUsers({
@@ -388,7 +420,7 @@ const activeUsers = await client.getUsers({
       ]}
     ]
   }
-});
+}).execute();
 ```
 
 #### `updateUsers(criteria, updates, options?)`
@@ -409,7 +441,7 @@ const promoted = await client.updateUsers({
     }
   },
   options: { limit: 20 }
-});
+}).execute();
 ```
 
 #### `deleteUsers(criteria, options?)`
@@ -424,7 +456,7 @@ const deleted = await client.deleteUsers({
     "customData.temporary": true
   },
   options: { limit: 100 }
-});
+}).execute();
 ```
 
 ---
@@ -485,12 +517,12 @@ await client.createEvents([
   { event: { title: "Event 1", user: { identifier: "user1" } } },
   { event: { title: "Event 2", user: { identifier: "user2" } } },
   { event: { title: "Event 3", user: { identifier: "user3" } } }
-]);
+]).execute();
 
 // ❌ Avoid: Multiple individual requests
-await client.createEvents({ event: { title: "Event 1", user: { identifier: "user1" } } });
-await client.createEvents({ event: { title: "Event 2", user: { identifier: "user2" } } });
-await client.createEvents({ event: { title: "Event 3", user: { identifier: "user3" } } });
+await client.createEvents({ event: { title: "Event 1", user: { identifier: "user1" } } }).execute();
+await client.createEvents({ event: { title: "Event 2", user: { identifier: "user2" } } }).execute();
+await client.createEvents({ event: { title: "Event 3", user: { identifier: "user3" } } }).execute();
 ```
 
 ### Query Optimization
@@ -504,7 +536,7 @@ const events = await client.getEvents({
     createdAt: { $gte: "2024-01-01T00:00:00Z" }
   },
   options: { limit: 100, sortBy: "createdAt" }
-});
+}).execute();
 
 // ❌ Avoid: Broad queries without limits
 const allEvents = await client.getEvents(); // Could return thousands of records
@@ -519,13 +551,13 @@ LoomCal includes React components and hooks for seamless integration:
 ### Context Provider
 
 ```tsx
-import { LoomCalProvider } from 'loomcal';
+import { LoomCalProvider } from '@neploom/loomcal';
 
 function App() {
   return (
     <LoomCalProvider
       config={{
-        apiKey: process.env.NEXT_PUBLIC_LOOMCAL_API_KEY!,
+        apiKey: process.env.LOOMCAL_API_KEY!,
         baseUrl: process.env.NEXT_PUBLIC_LOOMCAL_BASE_URL!,
         debug: process.env.NODE_ENV === 'development'
       }}
@@ -539,7 +571,7 @@ function App() {
 ### Hooks for Event Management
 
 ```tsx
-import { useLoomCal } from 'loomcal';
+import { useLoomCal } from '@neploom/loomcal';
 
 function EventTracker() {
   const { createEvents, getEvents, loading, error } = useLoomCal();
@@ -553,7 +585,7 @@ function EventTracker() {
           customData: { action, timestamp: Date.now() },
           user: { identifier: 'current-user' }
         }
-      });
+      }).execute();
     } catch (err) {
       console.error('Failed to track action:', err);
     }
@@ -573,12 +605,64 @@ function EventTracker() {
 
 ---
 
+## ⛓️ Advanced Use Case: Method Chaining
+
+LoomCal supports method chaining for complex operations, allowing you to combine multiple operations into a single execution:
+
+```typescript
+// Chain multiple operations
+const results = await client
+  .createEvents([
+    { 
+      event: { 
+        title: 'User Registration',
+        type: 'auth',
+        user: { identifier: 'user123' }
+      }
+    }
+  ])
+  .getEvents({
+    target: { 
+      type: 'auth',
+      'user.identifier': 'user123'
+    }
+  })
+  .execute(); // Executes all operations in order
+
+// Practical example: Track event and get user history
+const history = await client
+  .createEvents({
+    event: {
+      title: 'Purchase Complete',
+      type: 'transaction',
+      customData: { amount: 99.99 },
+      user: { identifier: 'customer123' }
+    }
+  })
+  .getEvents({
+    target: {
+      'user.identifier': 'customer123',
+      type: 'transaction'
+    },
+    options: { 
+      limit: 5,
+      sortBy: 'createdAt',
+      sortOrder: 'desc'
+    }
+  })
+  .execute();
+```
+
+This approach is particularly useful when you need to perform related operations in sequence while maintaining efficiency with a single API call.
+
+---
+
 ## 🚀 Quick Dive: Real-World Example
 
 Let's build a complete learning progress tracker:
 
 ```typescript
-import { LoomCal } from 'loomcal';
+import { LoomCal } from '@neploom/loomcal';
 
 class LearningTracker {
   private client: LoomCal;
@@ -611,7 +695,7 @@ class LearningTracker {
           onDuplicate: 'update'
         }
       }
-    });
+    }).execute();
   }
 
   // Track lesson completion with score
@@ -630,7 +714,7 @@ class LearningTracker {
         },
         user: { identifier: studentId }
       }
-    });
+    }).execute();
   }
 
   // Get student progress for a course
@@ -644,7 +728,7 @@ class LearningTracker {
           'customData.courseId': courseId
         },
         options: { sortBy: 'createdAt', sortOrder: 'desc' }
-      }),
+      }).execute(),
       
       // Get all started lessons
       this.client.getEvents({
@@ -653,7 +737,7 @@ class LearningTracker {
           'user.identifier': studentId,
           'customData.courseId': courseId
         }
-      })
+      }).execute()
     ]);
 
     return {
@@ -677,7 +761,7 @@ class LearningTracker {
         sortBy: 'customData.score',
         sortOrder: 'desc'
       }
-    });
+    }).execute();
 
     // Group by student and calculate metrics
     const studentMetrics = this.groupAndAnalyze(completions);
@@ -701,7 +785,7 @@ class LearningTracker {
         }
       },
       options: { limit: 100 }
-    });
+    }).execute();
   }
 
   private calculateAverageScore(events: any[]): number {
@@ -736,10 +820,45 @@ console.log('Top performers:', topStudents);
 
 ---
 
+## 🦾 Advanced Edge Case: Deferred Event Tracking (Recommended Pattern)
+
+A powerful pattern is to create a shared SDK client in a file like `loomcal/userEventTracking.ts`:
+
+```typescript
+// loomcal/userEventTracking.ts
+import { LoomCal } from '@neploom/loomcal';
+
+export const client = new LoomCal({
+  apiKey: 'lc_your_api_key_here',
+  baseUrl: 'https://your-loomcal-instance.com',
+});
+```
+
+Then, throughout your app, track events as the user interacts (no need to await), and no need to execute immediately:
+
+```typescript
+client.createEvents({
+  event: {
+    title: 'Event 1',
+    user: { identifier: 'User_123' },
+    // ...other fields
+  }
+});
+```
+
+As the user continues to interact, queue up more events. When the user is about to leave the page (e.g., in a `beforeunload` handler):
+
+```typescript
+await client.execute(); // Sends all queued events in a single request
+```
+
+This pattern enables batching and reduces network requests, making your event tracking highly efficient.
+
+---
+
 ## 📚 Additional Resources
 
 - **[API Documentation](https://docs.loomcal.neploom.com)** - Complete API reference
-- **[Example Projects](https://github.com/Enfiniq/LoomCal/examples)** - Real-world implementations
 - **[Dashboard](https://dashboard.loomcal.neploom.com)** - Manage API keys and view analytics
 - **[Community Discord](https://discord.gg/loomcal)** - Get help and share ideas
 
@@ -749,4 +868,4 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ---
 
-**Built with ❤️ by the LoomCal Team**
+**Built with ❤️ by the LoomCal & NepLoom Team**
