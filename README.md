@@ -229,9 +229,11 @@ const [newUser, userEvents] = await client
 ```
 
 ## 📖 Documentation
+
 [📖 **Partial SDK Documentation →**](/src/sdk/README.md)
----
+
 [📖 **Full SDK Documentation →**](https://docs.loomcal.neploom.com)
+
 
 ## 🤖 Bot Integration
 
@@ -242,7 +244,10 @@ Add the LoomCal bot to your Slack workspace for quick event management:
 ```
 
 ### Telegram Bot
-Start a conversation with `[@LoomCalBot](https://t.me/LoomCalBot)` and manage your events on the go.
+Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage your events on the go.
+
+#### Documentation
+[📖 **Telegram Bot Documentation →**](/src/app//api//bots/telegram/_controller/lib/README.md)
 
 ### Discord Bot
 Invite the LoomCal bot to your Discord server for team event coordination.
@@ -283,6 +288,10 @@ ALLOWED_ORIGINS=http://localhost:3000
 
 # Secret key for API key encryption/decryption (generate: openssl rand -hex 32)
 API_KEY_SECRET=your_api_key_encryption_secret_here
+
+# Telegram Bot configuration
+BOT_URL=your_app_url_here
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 ```
 
 ### Self-Hosting
@@ -359,7 +368,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Contributors
 
 - **Enfiniq** — SDK, API, Telegram Bot and APP development
-- **AI** — Helped with README generation, copy writing, adding comments, regex, and constants
+- **AI** — Helped with README generation, copy writing, adding comments, regex, constants, parsing logic, scanning logic, message texts, and optimising the logic for flag detection.
 
 ## 🙏 Acknowledgments
 

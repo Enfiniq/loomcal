@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { handleMessage, TelegramMessage } from "./_controller/lib/telegram";
+import { handleMessage, TelegramMessage } from "@/app/api/bots/telegram/_controller/lib/telegram";
 
 export async function POST(req: NextRequest) {
   try {
