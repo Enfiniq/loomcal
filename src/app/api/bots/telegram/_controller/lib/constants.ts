@@ -108,65 +108,76 @@ export const ERROR_MESSAGES = {
 } as const;
 
 export const SUCCESS_MESSAGES = {
-  SETUP_COMPLETE: "Bot configuration completed successfully\\!",
-  EVENT_CREATED: "Event created successfully\\!",
-  EVENTS_RETRIEVED: "Events retrieved successfully\\!",
-  EVENTS_UPDATED: "Events updated successfully\\!",
-  EVENTS_DELETED: "Events deleted successfully\\!",
+  SETUP_COMPLETE: "Bot configuration completed successfully!",
+  EVENT_CREATED: "Event created successfully!",
+  EVENTS_RETRIEVED: "Events retrieved successfully!",
+  EVENTS_UPDATED: "Events updated successfully!",
+  EVENTS_DELETED: "Events deleted successfully!",
 } as const;
 
+import { bold, inlineCode, codeBlock } from "./formatting";
+
 export const HELP_MESSAGES = {
-  SETUP: `Setup Command
+  SETUP: () => `${bold("Setup Command")}
 
-Configure the bot with your LoomCal API key\\.
+Configure the bot with your LoomCal API key.
 
-Format:
-\`/setup \\[api\\_key\\] \\[base\\_url\\] \\[timeout\\] \\[retries\\]\`
+${bold("Format:")}
+${inlineCode("/setup [api_key] [base_url] [timeout] [retries]")}
 
-Using flags:
-\`/setup \\-api \\[key\\] \\-base \\[url\\] \\-timeout \\[ms\\] \\-retries \\[count\\]\`
+${bold("Using flags:")}
+${inlineCode("/setup -api [key] -base [url] -timeout [ms] -retries [count]")}
 
-Parameters:
-• api\\_key \\(required\\) \\- Your LoomCal API key
-• base\\_url \\(optional\\) \\- Custom API endpoint  
-• timeout \\(optional\\) \\- Request timeout in milliseconds
-• retries \\(optional\\) \\- Number of retry attempts`,
+${bold("Parameters:")}
+• ${bold("api_key")} (required) - Your LoomCal API key
+• ${bold("base_url")} (optional) - Custom API endpoint  
+• ${bold("timeout")} (optional) - Request timeout in milliseconds
+• ${bold("retries")} (optional) - Number of retry attempts`,
 
-  CREATE: `Create Command
+  CREATE: () => `${bold("Create Command")}
 
-Create new events in your calendar\\.
+Create new events in your calendar.
 
-Format:
-\`/create \\[title\\] \\[description\\] \\[startTime\\] \\[endTime\\] \\[type\\] \\[repeat\\] \\[color\\] \\[resource\\] \\[customData\\] \\[options\\]\`
+${bold("Format:")}
+${inlineCode(
+  "/create [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options]"
+)}
 
-Using flags:
-\`/create \\-t \\[title\\] \\-d \\[description\\] \\-rt \\[startTime\\] \\[endTime\\] \\-type \\[type\\] \\-repeat \\[count\\] \\-color \\[color\\] \\-r \\[resource\\] \\-c \\[custom\\_data\\] \\-o \\[options\\]\`
+${bold("Using flags:")}
+${inlineCode(
+  "/create -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [count] -color [color] -r [resource] -c [custom_data] -o [options]"
+)}
 
-Options schema:
-\`\`\`json
-{
+${bold("Options schema:")}
+${codeBlock(
+  `{
   "isSigned": "boolean | object",
   "savingRule": {
     "timeBetweenDuplicates": "number",
     "onDuplicate": "update|ignore|reject",
     "uniquenessFields": ["field1"]
   }
-}
-\`\`\``,
+}`,
+  "json"
+)}`,
 
-  GET: `Get Command
+  GET: () => `${bold("Get Command")}
 
-Retrieve events with optional filtering\\.
+Retrieve events with optional filtering.
 
-Format:
-\`/get \\[title\\] \\[description\\] \\[startTime\\] \\[endTime\\] \\[type\\] \\[repeat\\] \\[color\\] \\[resource\\] \\[customData\\] \\[options\\] \\[filter\\]\`
+${bold("Format:")}
+${inlineCode(
+  "/get [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filter]"
+)}
 
-Using flags:
-\`/get \\-t \\[title\\] \\-d \\[description\\] \\-rt \\[startTime\\] \\[endTime\\] \\-type \\[type\\] \\-repeat \\[count\\] \\-color \\[color\\] \\-r \\[resource\\] \\-c \\[custom\\_data\\] \\-o \\[options\\] \\-f \\[filter\\]\`
+${bold("Using flags:")}
+${inlineCode(
+  "/get -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [count] -color [color] -r [resource] -c [custom_data] -o [options] -f [filter]"
+)}
 
-Filter schema:
-\`\`\`json
-{
+${bold("Filter schema:")}
+${codeBlock(
+  `{
   "field": "value", 
   "field2": {
     "$operator": "value"
@@ -176,122 +187,135 @@ Filter schema:
       "field": "value"
     }
   ]
-}
-\`\`\`
+}`,
+  "json"
+)}
 
-Options schema:
-\`\`\`json
-{
+${bold("Options schema:")}
+${codeBlock(
+  `{
   "limit": "number", 
   "sortBy": "string", 
   "sortOrder": "asc|desc", 
   "offset": "number", 
   "isSigned": "boolean"
-}
-\`\`\``,
+}`,
+  "json"
+)}`,
 
-  UPDATE: `Update Command
+  UPDATE: () => `${bold("Update Command")}
 
-Update existing events using target criteria and new values\\.
+Update existing events using target criteria and new values.
 
-Format:
-\`/update \\[title\\] \\[description\\] \\[startTime\\] \\[endTime\\] \\[type\\] \\[repeat\\] \\[color\\] \\[resource\\] \\[customData\\] \\[options\\] \\[filter\\] \\-to \\[new\\_values\\]\`
+${bold("Format:")}
+${inlineCode(
+  "/update [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filter] -to [new_values]"
+)}
 
-Using flags:
-\`/update \\-t \\[title\\] \\-d \\[description\\] \\-rt \\[startTime\\] \\[endTime\\] \\-type \\[type\\] \\-repeat \\[count\\] \\-color \\[color\\] \\-r \\[resource\\] \\-c \\[custom\\_data\\] \\-o \\[options\\] \\-f \\[filter\\] \\-to \\[new\\_values\\]\`
+${bold("Using flags:")}
+${inlineCode(
+  "/update -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [count] -color [color] -r [resource] -c [custom_data] -o [options] -f [filter] -to [new_values]"
+)}
 
-Options schema:
-\`\`\`json
-{
+${bold("Options schema:")}
+${codeBlock(
+  `{
   "limit": "number",
   "sortBy": "string", 
   "sortOrder": "asc|desc",
   "offset": "number",
   "isSigned": "boolean"
-}
-\`\`\``,
+}`,
+  "json"
+)}`,
 
-  DELETE: `Delete Command
+  DELETE: () => `${bold("Delete Command")}
 
-Delete events matching specified criteria\\.
+Delete events matching specified criteria.
 
-Format:
-\`/delete \\[title\\] \\[description\\] \\[startTime\\] \\[endTime\\] \\[type\\] \\[repeat\\] \\[color\\] \\[resource\\] \\[customData\\] \\[options\\] \\[filter\\]\`
+${bold("Format:")}
+${inlineCode(
+  "/delete [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filter]"
+)}
 
-Using flags:
-\`/delete \\-t \\[title\\] \\-d \\[description\\] \\-rt \\[startTime\\] \\[endTime\\] \\-type \\[type\\] \\-repeat \\[count\\] \\-color \\[color\\] \\-r \\[resource\\] \\-c \\[custom\\_data\\] \\-o \\[options\\] \\-f \\[filter\\]\`
+${bold("Using flags:")}
+${inlineCode(
+  "/delete -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [count] -color [color] -r [resource] -c [custom_data] -o [options] -f [filter]"
+)}
 
-⚠️ Warning: This action cannot be undone\\!
+${bold("⚠️ Warning:")} This action cannot be undone!
 
-Options schema:
-\`\`\`json
-{
+${bold("Options schema:")}
+${codeBlock(
+  `{
   "limit": "number",
   "sortBy": "string",
   "sortOrder": "asc|desc",
   "offset": "number",
   "isSigned": "boolean"
-}
-\`\`\``,
+}`,
+  "json"
+)}`,
 
-  JSON_TIPS: `JSON Format
+  JSON_TIPS: () => `${bold("JSON Format")}
 
-Valid structure:
-\`\`\`json
-{
+${bold("Valid structure:")}
+${codeBlock(
+  `{
   "key": "value",
   "number": 123,
   "boolean": true
-}
-\`\`\`
+}`,
+  "json"
+)}
 
-Rules:
+${bold("Rules:")}
 • Keys must be quoted with double quotes
 • Values use double quotes for strings
 • No trailing commas
 • Escape special characters in values
 
-\\#\\#\\# Complex structure:
-\`\`\`json
-\\{"customData": \\{"priority": "high"\\}, "\\$or": \\[\\{"type": "meeting"\\}\\]\\}
-\`\`\``,
+${bold("Complex structure:")}
+${codeBlock(
+  `{"customData": {"priority": "high"}, "$or": [{"type": "meeting"}]}`,
+  "json"
+)}`,
 
-  FLAG: `Available Flags
+  FLAG: () => `${bold("Available Flags")}
 
-• \`\\-t\` \\- Title
-• \`\\-d\` \\- Description
-• \`\\-rt\` \\- Relative time \\(Minutes from now\\)
-• \`\\-at\` \\- Absolute time
-• \`\\-type\` \\- Event type
-• \`\\-color\` \\- Color
-• \`\\-r\` \\- Resource URL
-• \`\\-c\` \\- Custom data \\(JSON object\\)
-• \`\\-repeat\` \\- Repeat count
-• \`\\-f\` \\- Filter \\(JS object\\)
-• \`\\-o\` \\- Options \\(JS object\\)
+• ${inlineCode("-t")} - Title
+• ${inlineCode("-d")} - Description
+• ${inlineCode("-rt")} - Relative time (Minutes from now)
+• ${inlineCode("-at")} - Absolute time
+• ${inlineCode("-type")} - Event type
+• ${inlineCode("-color")} - Color
+• ${inlineCode("-r")} - Resource URL
+• ${inlineCode("-c")} - Custom data (JSON object)
+• ${inlineCode("-repeat")} - Repeat count
+• ${inlineCode("-f")} - Filter (JS object)
+• ${inlineCode("-o")} - Options (JS object)
 
-Time flags:
-• \`\\-rt \\[startTime\\] \\[endTime\\]\` \\- Relative time \\(Minutes from now\\)
-• \`\\-at \\[startTime\\] \\[endTime\\]\` \\- Absolute time
-• \`\\-rt \\-s \\[minutes\\]\` \\- Relative start time \\(minutes from now\\)
-• \`\\-rt \\-e \\[minutes\\]\` \\- Relative end time \\(minutes from now\\)
-• \`\\-at \\-s "ISO\\_DATE"\` \\- Absolute start time
-• \`\\-at \\-e "ISO\\_DATE"\` \\- Absolute end time
-`,
+${bold("Time flags:")}
+• ${inlineCode("-rt [startTime] [endTime]")} - Relative time (Minutes from now)
+• ${inlineCode("-at [startTime] [endTime]")} - Absolute time
+• ${inlineCode("-rt -s [minutes]")} - Relative start time (minutes from now)
+• ${inlineCode("-rt -e [minutes]")} - Relative end time (minutes from now)
+• ${inlineCode('-at -s "ISO_DATE"')} - Absolute start time
+• ${inlineCode('-at -e "ISO_DATE"')} - Absolute end time`,
 
-  OPERATOR: `Available Operators
+  OPERATOR: () => `${bold("Available Operators")}
 
-• \`\\$eq\\(value\\)\` \\- Equals
-• \`\\$ne\\(value\\)\` \\- Not equals
-• \`\\$gt\\(value\\)\` \\- Greater than
-• \`\\$lt\\(value\\)\` \\- Less than
-• \`\\$gte\\(value\\)\` \\- Greater than or equal
-• \`\\$lte\\(value\\)\` \\- Less than or equal
-• \`\\$in\\(val1,val2\\)\` \\- Value in array
-• \`\\$nin\\(val1,val2\\)\` \\- Value not in array
-• \`\\$regex\\("pattern"\\)\` \\- Regular expression
-• \`\\$exists\\(true/false\\)\` \\- Field exists
-• \`\\$and\\(cond1,cond2, \\.\\.\\.\\)\` \\- Logical AND
-• \`\\$or\\(cond1,cond2, \\.\\.\\.\\)\` \\- Logical OR
-• \`\\$not\\(cond1, cond2, \\.\\.\\.\\)\` \\- Logical NOT`,
+• ${inlineCode("$eq(value)")} - Equals
+• ${inlineCode("$ne(value)")} - Not equals
+• ${inlineCode("$gt(value)")} - Greater than
+• ${inlineCode("$lt(value)")} - Less than
+• ${inlineCode("$gte(value)")} - Greater than or equal
+• ${inlineCode("$lte(value)")} - Less than or equal
+• ${inlineCode("$in(val1,val2)")} - Value in array
+• ${inlineCode("$nin(val1,val2)")} - Value not in array
+• ${inlineCode('$regex("pattern")')} - Regular expression
+• ${inlineCode("$exists(true/false)")} - Field exists
+• ${inlineCode("$and(cond1,cond2, ...)")} - Logical AND
+• ${inlineCode("$or(cond1,cond2, ...)")} - Logical OR
+• ${inlineCode("$not(cond1, cond2, ...)")} - Logical NOT`,
 } as const;

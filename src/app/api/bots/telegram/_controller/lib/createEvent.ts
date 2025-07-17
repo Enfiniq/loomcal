@@ -15,7 +15,7 @@ import {
   inlineCode,
   codeBlock,
   italic,
-} from "@/app/api/bots/telegram/_controller/lib/telegram";
+} from "@/app/api/bots/telegram/_controller/lib/formatting";
 import { sendMessage } from "@/app/api/bots/telegram/_controller/lib/telegram";
 
 export async function handleCreateCommand(
@@ -34,7 +34,7 @@ export async function handleCreateCommand(
         `${codeBlock("/setup YOUR_API_KEY")}\n` +
         `Need help? Type ${inlineCode(
           "/help setup"
-        )} for detailed instructions\\.`
+        )} for detailed instructions.`
     );
     return;
   }
@@ -49,6 +49,13 @@ export async function handleCreateCommand(
 
     const parsedData = parseCreateEventData(text);
     const { event: eventData, options } = parsedData;
+
+    console.log("Database Operation Prepared:", {
+      commandType: "CREATE",
+      event: eventData,
+      options: options ? toCreateOptions(options) : undefined,
+      inputText: text,
+    });
 
     const result = await loomCalClient
       .createEvents({
@@ -77,11 +84,11 @@ export async function handleCreateCommand(
       await sendMessage(
         chatId,
         `${bold("Event Created Successfully!")}\n\n` +
-          `Your event has been created and scheduled\\.\n\n` +
-          `\\#\\#\\# Next steps:\n` +
-          `• ${inlineCode("/get")} \\- View your events\n` +
-          `• ${inlineCode("/update")} \\- Modify event details\n` +
-          `• ${inlineCode("/help")} \\- See all available commands`
+          `Your event has been created and scheduled.\n\n` +
+          `${bold("Next steps:")}\n` +
+          `• ${inlineCode("/get")} - View your events\n` +
+          `• ${inlineCode("/update")} - Modify event details\n` +
+          `• ${inlineCode("/help")} - See all available commands`
       );
     } else {
       await sendMessage(
@@ -91,7 +98,7 @@ export async function handleCreateCommand(
           `• Required fields are provided\n` +
           `• Date/time format is correct\n` +
           `• JSON syntax is valid\n\n` +
-          `Need help? Type ${inlineCode("/help create")} for examples\\.`
+          `Need help? Type ${inlineCode("/help create")} for examples.`
       );
     }
   } catch (error) {
@@ -129,7 +136,7 @@ function getCreateErrorMessage(error: unknown, text: string): string {
       `• Missing closing braces ${inlineCode("}")}\n` +
       `• Unescaped quotes in strings\n` +
       `• Missing commas between fields\n\n` +
-      `Type ${inlineCode("/help create")} for format examples\\.`
+      `Type ${inlineCode("/help create")} for format examples.`
     );
   }
 
@@ -137,9 +144,9 @@ function getCreateErrorMessage(error: unknown, text: string): string {
     return (
       `${bold("Missing Required Fields")}\n\n` +
       `${italic("Required fields:")}\n` +
-      `• ${inlineCode("title")} \\- Event name\n` +
-      `• ${inlineCode("startTime")} \\- ISO date string\n\n` +
-      `Type ${inlineCode("/help create")} for detailed format\\.`
+      `• ${inlineCode("title")} - Event name\n` +
+      `• ${inlineCode("startTime")} - ISO date string\n\n` +
+      `Type ${inlineCode("/help create")} for detailed format.`
     );
   }
 
@@ -150,12 +157,12 @@ function getCreateErrorMessage(error: unknown, text: string): string {
   if (isNetworkError) {
     return (
       `🌐 ${bold("Connection Error")}\n\n` +
-      `Unable to reach the LoomCal API\\.\n\n` +
+      `Unable to reach the LoomCal API.\n\n` +
       `${italic("Please try:")}\n` +
       `• Check your internet connection\n` +
       `• Verify API key is still valid\n` +
       `• Try again in a few moments\n\n` +
-      `Type ${inlineCode("/help create")} if you need assistance\\.`
+      `Type ${inlineCode("/help create")} if you need assistance.`
     );
   }
 
@@ -163,11 +170,11 @@ function getCreateErrorMessage(error: unknown, text: string): string {
     `${bold("Event Creation Failed")}\n\n` +
     `${italic("Please check:")}\n` +
     `• All required fields are provided\n` +
-    `• Date/time format is correct \\(ISO 8601\\)\n` +
+    `• Date/time format is correct (ISO 8601)\n` +
     `• JSON syntax is valid\n` +
     `• API key has proper permissions\n\n` +
     `Need help? Type ${inlineCode(
       "/help create"
-    )} for format and troubleshooting\\.`
+    )} for format and troubleshooting.`
   );
 }

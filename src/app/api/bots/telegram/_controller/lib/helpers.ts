@@ -164,7 +164,6 @@ export function extractOptions(text: string): ParsedOptions | null {
 }
 
 export function extractFilter(text: string): Record<string, unknown> | null {
-  // First try to extract from -f flag
   const flags = extractFlags(text);
 
   if (flags["-f"]) {
@@ -194,7 +193,6 @@ export function extractFilter(text: string): Record<string, unknown> | null {
 }
 
 function extractSequenceWithOptions(text: string): string[] {
-  // Remove the command itself
   const commandPattern = /^\/\w+\s*/;
   let cleanText = text.replace(commandPattern, "");
 
@@ -361,7 +359,6 @@ export function parseTimeFlags(flags: ParsedFlags): {
     endTime?: string | Record<string, unknown>;
   } = {};
 
-  // Process -rt flag
   if (flags["-rt"]) {
     const rtValue = flags["-rt"];
 
@@ -406,7 +403,6 @@ export function parseTimeFlags(flags: ParsedFlags): {
     }
   }
 
-  // Handle -at (absolute time) flag
   if (flags["-at"]) {
     const atValue = flags["-at"];
 

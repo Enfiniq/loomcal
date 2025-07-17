@@ -1,7 +1,10 @@
 import { convertRelativeTime } from "@/app/api/bots/telegram/_controller/lib/helpers";
 import { parseValue } from "@/app/api/bots/telegram/_controller/lib/parsers";
 import { FLAGS } from "@/app/api/bots/telegram/_controller/lib/constants";
-import { parseTimeOperatorArgs, createOperatorQuery } from "@/app/api/bots/telegram/_controller/lib/operators";
+import {
+  parseTimeOperatorArgs,
+  createOperatorQuery,
+} from "@/app/api/bots/telegram/_controller/lib/operators";
 
 export function separateCombinedJSONObjects(combinedString: string): string[] {
   const objects: string[] = [];

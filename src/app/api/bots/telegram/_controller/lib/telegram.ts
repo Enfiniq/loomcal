@@ -39,6 +39,14 @@ import {
   ERROR_MESSAGES,
   HELP_MESSAGES,
 } from "@/app/api/bots/telegram/_controller/lib/constants";
+import {
+  bold,
+  italic,
+  inlineCode,
+  codeBlock,
+  link,
+  escapeMarkdown,
+} from "@/app/api/bots/telegram/_controller/lib/formatting";
 
 // User configuration storage
 const userConfigs = new Map<
@@ -221,50 +229,36 @@ export async function sendMessage(
 ): Promise<void> {
   try {
     const telegramApi = getAxiosInstance();
+    const defaultParseMode =
+      options?.parse_mode !== undefined ? options.parse_mode : "Markdown";
+
     await telegramApi.post("sendMessage", {
       chat_id: chatId,
       text,
-      parse_mode: "MarkdownV2",
+      parse_mode: defaultParseMode,
+      disable_web_page_preview: true,
       ...options,
     });
   } catch (error) {
-    throw error;
+    console.error(
+      "Telegram API error with Markdown, trying plain text:",
+      error
+    );
+    console.error("Message content:", text);
+
+    try {
+      const telegramApi = getAxiosInstance();
+      await telegramApi.post("sendMessage", {
+        chat_id: chatId,
+        text,
+        disable_web_page_preview: true,
+        ...options,
+      });
+    } catch (fallbackError) {
+      console.error("Plain text also failed:", fallbackError);
+      throw fallbackError;
+    }
   }
-}
-
-function escapeMarkdownV2(text: string): string {
-  return text
-    .replace(/\\/g, "\\\\") 
-    .replace(/[_*\[\]()~`>#+=|{}.!-]/g, "\\$&"); 
-}
-
-export function codeBlock(text: string, language?: string): string {
-  const escapedText = text.replace(/\\/g, "\\\\").replace(/`/g, "\\`");
-  if (language) {
-    return `\`\`\`${language}\n${escapedText}\n\`\`\``;
-  }
-  return `\`\`\`\n${escapedText}\n\`\`\``;
-}
-
-export function inlineCode(text: string): string {
-  const escapedText = text.replace(/\\/g, "\\\\").replace(/`/g, "\\`");
-  return `\`${escapedText}\``;
-}
-
-export function bold(text: string): string {
-  const escapedText = escapeMarkdownV2(text);
-  return escapedText;
-}
-
-export function italic(text: string): string {
-  const escapedText = escapeMarkdownV2(text);
-  return escapedText;
-}
-
-function link(text: string, url: string): string {
-  const escapedText = escapeMarkdownV2(text);
-  const escapedUrl = url.replace(/\\/g, "\\\\").replace(/\)/g, "\\)");
-  return `[${escapedText}](${escapedUrl})`;
 }
 
 async function handleStartCommand(chatId: number): Promise<void> {
@@ -272,20 +266,18 @@ async function handleStartCommand(chatId: number): Promise<void> {
     `${bold("Welcome to LoomCal Bot!")}\n\n` +
     `This bot helps you manage your calendar events through the ${italic(
       "LoomCal API"
-    )}\\.\n\n` +
-    `\\#\\#\\# Available Commands:\n` +
-    `• ${inlineCode("/setup [apiKey]")} \\- Configure your API key\n` +
-    `• ${inlineCode("/create [event_data]")} \\- Create new events\n` +
-    `• ${inlineCode("/get [filters]")} \\- Get existing events\n` +
-    `• ${inlineCode("/update [target] [data]")} \\- Update events\n` +
-    `• ${inlineCode("/delete [target]")} \\- Delete events\n` +
-    `• ${inlineCode("/help")} \\- Show detailed help\n\n` +
-    `\\#\\#\\# Quick References:\n` +
-    `• ${inlineCode("/help flag")} \\- See all available flags\n` +
-    `• ${inlineCode("/help operator")} \\- See all available operators\n\n` +
-    `Need help? Type ${inlineCode(
-      "/help"
-    )} for detailed command information\\.`;
+    )}.\n\n` +
+    `${bold("Available Commands:")}\n` +
+    `• ${inlineCode("/setup [apiKey]")} - Configure your API key\n` +
+    `• ${inlineCode("/create [event_data]")} - Create new events\n` +
+    `• ${inlineCode("/get [filters]")} - Get existing events\n` +
+    `• ${inlineCode("/update [target] [data]")} - Update events\n` +
+    `• ${inlineCode("/delete [target]")} - Delete events\n` +
+    `• ${inlineCode("/help")} - Show detailed help\n\n` +
+    `${bold("Quick References:")}\n` +
+    `• ${inlineCode("/help flag")} - See all available flags\n` +
+    `• ${inlineCode("/help operator")} - See all available operators\n\n` +
+    `Need help? Type ${inlineCode("/help")} for detailed command information.`;
 
   await sendMessage(chatId, startMessage);
 }
@@ -300,27 +292,27 @@ async function handleHelpCommand(chatId: number, text: string): Promise<void> {
 
     switch (command) {
       case "setup":
-        helpMessage = HELP_MESSAGES.SETUP;
+        helpMessage = HELP_MESSAGES.SETUP();
         break;
       case "create":
-        helpMessage = HELP_MESSAGES.CREATE;
+        helpMessage = HELP_MESSAGES.CREATE();
         break;
       case "get":
-        helpMessage = HELP_MESSAGES.GET;
+        helpMessage = HELP_MESSAGES.GET();
         break;
       case "update":
-        helpMessage = HELP_MESSAGES.UPDATE;
+        helpMessage = HELP_MESSAGES.UPDATE();
         break;
       case "delete":
-        helpMessage = HELP_MESSAGES.DELETE;
+        helpMessage = HELP_MESSAGES.DELETE();
         break;
       case "flag":
       case "flags":
-        helpMessage = HELP_MESSAGES.FLAG;
+        helpMessage = HELP_MESSAGES.FLAG();
         break;
       case "operator":
       case "operators":
-        helpMessage = HELP_MESSAGES.OPERATOR;
+        helpMessage = HELP_MESSAGES.OPERATOR();
         break;
       default:
         helpMessage =
@@ -330,28 +322,28 @@ async function handleHelpCommand(chatId: number, text: string): Promise<void> {
           )}, ${inlineCode("get")}, ${inlineCode("update")}, ${inlineCode(
             "delete"
           )}, ${inlineCode("flag")}, ${inlineCode("operator")}\n\n` +
-          `Type ${inlineCode("/help")} to see all available commands\\.`;
+          `Type ${inlineCode("/help")} to see all available commands.`;
     }
 
     await sendMessage(chatId, helpMessage);
   } else {
     const generalHelp =
       `${bold("LoomCal Bot Help")}\n\n` +
-      `\\#\\#\\# Available Commands:\n` +
-      `• ${inlineCode("/setup [apiKey]")} \\- Configure your API key\n` +
-      `• ${inlineCode("/create [event_data]")} \\- Create new events\n` +
-      `• ${inlineCode("/get [filters]")} \\- Get existing events\n` +
-      `• ${inlineCode("/update [target] [data]")} \\- Update events\n` +
-      `• ${inlineCode("/delete [target]")} \\- Delete events\n\n` +
-      `\\#\\#\\# Get Detailed Help:\n` +
+      `${bold("Available Commands:")}\n` +
+      `• ${inlineCode("/setup [apiKey]")} - Configure your API key\n` +
+      `• ${inlineCode("/create [event_data]")} - Create new events\n` +
+      `• ${inlineCode("/get [filters]")} - Get existing events\n` +
+      `• ${inlineCode("/update [target] [data]")} - Update events\n` +
+      `• ${inlineCode("/delete [target]")} - Delete events\n\n` +
+      `${bold("Get Detailed Help:")}\n` +
       `Type ${inlineCode("/help [command]")} for specific examples:\n` +
-      `• ${inlineCode("/help setup")} \\- Setup instructions\n` +
-      `• ${inlineCode("/help create")} \\- Create event examples\n` +
-      `• ${inlineCode("/help get")} \\- Query examples\n` +
-      `• ${inlineCode("/help update")} \\- Update examples\n` +
-      `• ${inlineCode("/help delete")} \\- Delete examples\n` +
-      `• ${inlineCode("/help flag")} \\- Available flags\n` +
-      `• ${inlineCode("/help operator")} \\- Available operators`;
+      `• ${inlineCode("/help setup")} - Setup instructions\n` +
+      `• ${inlineCode("/help create")} - Create event examples\n` +
+      `• ${inlineCode("/help get")} - Query examples\n` +
+      `• ${inlineCode("/help update")} - Update examples\n` +
+      `• ${inlineCode("/help delete")} - Delete examples\n` +
+      `• ${inlineCode("/help flag")} - Available flags\n` +
+      `• ${inlineCode("/help operator")} - Available operators`;
 
     await sendMessage(chatId, generalHelp);
   }
@@ -364,27 +356,27 @@ function getErrorSuggestion(text: string): string {
     case "/setup":
       return `${bold("Setup Help:")} Use ${inlineCode(
         "/help setup"
-      )} for API key configuration instructions\\.`;
+      )} for API key configuration instructions.`;
     case "/create":
       return `${bold("Create Help:")} Use ${inlineCode(
         "/help create"
-      )} for event creation format and fields\\.`;
+      )} for event creation format and fields.`;
     case "/get":
       return `${bold("Get Help:")} Use ${inlineCode(
         "/help get"
-      )} for query format and filter options\\.`;
+      )} for query format and filter options.`;
     case "/update":
       return `${bold("Update Help:")} Use ${inlineCode(
         "/help update"
-      )} for update syntax and operators\\.`;
+      )} for update syntax and operators.`;
     case "/delete":
       return `${bold("Delete Help:")} Use ${inlineCode(
         "/help delete"
-      )} for deletion syntax and targeting\\.`;
+      )} for deletion syntax and targeting.`;
     default:
       return `${bold("General Help:")} Use ${inlineCode(
         "/help"
-      )} to see all available commands and formats\\.`;
+      )} to see all available commands and formats.`;
   }
 }
 
@@ -403,9 +395,9 @@ export async function handleMessage(
   if (!text.startsWith("/")) {
     await sendMessage(
       chatId,
-      `💬 Please use a valid command\\. Type ${inlineCode(
+      `💬 Please use a valid command. Type ${inlineCode(
         "/help"
-      )} for available commands\\.`
+      )} for available commands.`
     );
     return;
   }
@@ -482,25 +474,25 @@ export async function handleMessage(
         await sendMessage(
           chatId,
           `${bold("Unknown command:")} ${inlineCode(command)}\n\n` +
-            `\\#\\#\\# Available commands:\n` +
-            `• ${inlineCode(COMMANDS.SETUP)} \\- Configure bot\n` +
-            `• ${inlineCode(COMMANDS.CREATE)} \\- Create events\n` +
-            `• ${inlineCode(COMMANDS.GET)} \\- Get events\n` +
-            `• ${inlineCode(COMMANDS.UPDATE)} \\- Update events\n` +
-            `• ${inlineCode(COMMANDS.DELETE)} \\- Delete events\n` +
-            `• ${inlineCode("/help")} \\- Show detailed help\n\n` +
-            `\\#\\#\\# Quick References:\n` +
-            `• ${inlineCode("/help flag")} \\- Available flags\n` +
-            `• ${inlineCode("/help operator")} \\- Available operators\n\n` +
-            `Type ${inlineCode("/help [command]")} for specific command help\\.`
+            `${bold("Available commands:")}\n` +
+            `• ${inlineCode(COMMANDS.SETUP)} - Configure bot\n` +
+            `• ${inlineCode(COMMANDS.CREATE)} - Create events\n` +
+            `• ${inlineCode(COMMANDS.GET)} - Get events\n` +
+            `• ${inlineCode(COMMANDS.UPDATE)} - Update events\n` +
+            `• ${inlineCode(COMMANDS.DELETE)} - Delete events\n` +
+            `• ${inlineCode("/help")} - Show detailed help\n\n` +
+            `${bold("Quick References:")}\n` +
+            `• ${inlineCode("/help flag")} - Available flags\n` +
+            `• ${inlineCode("/help operator")} - Available operators\n\n` +
+            `Type ${inlineCode("/help [command]")} for specific command help.`
         );
     }
   } catch {
     await sendMessage(
       chatId,
-      `🚨 ${bold("An error occurred")} while processing your command\\.\n\n` +
+      `🚨 ${bold("An error occurred")} while processing your command.\n\n` +
         `${getErrorSuggestion(text)}\n\n` +
-        `Type ${inlineCode("/help")} for command usage examples\\.`
+        `Type ${inlineCode("/help")} for command usage examples.`
     );
   }
 }
@@ -526,10 +518,10 @@ async function handleSetupCommand(
       `🔑 ${bold("Missing API Key")}\n\n` +
         `${italic("Correct usage:")}\n` +
         `${inlineCode("/setup YOUR_API_KEY")}\n` +
-        `${inlineCode("/setup -api YOUR_API_KEY")} \\(with flag\\)\n\n` +
+        `${inlineCode("/setup -api YOUR_API_KEY")} (with flag)\n\n` +
         `Need help? Type ${inlineCode(
           "/help setup"
-        )} for detailed instructions\\.`
+        )} for detailed instructions.`
     );
     return;
   }
@@ -538,9 +530,9 @@ async function handleSetupCommand(
     await sendMessage(
       chatId,
       `🚫 ${bold("Invalid API Key Format")}\n\n` +
-        `API keys should be at least 10 characters and contain only letters, numbers, underscores, and hyphens\\.\n\n` +
+        `API keys should be at least 10 characters and contain only letters, numbers, underscores, and hyphens.\n\n` +
         `${italic("Example format:")} ${inlineCode("abc123_xyz789")}\n\n` +
-        `Type ${inlineCode("/help setup")} for more information\\.`
+        `Type ${inlineCode("/help setup")} for more information.`
     );
     return;
   }
@@ -573,9 +565,9 @@ async function handleSetupCommand(
     await sendMessage(
       chatId,
       `${bold("Setup Complete!")}\n\n` +
-        `API key configured and saved to database\\!\n` +
+        `API key configured and saved to database!\n` +
         `Configuration will persist across sessions\n\n` +
-        `\\#\\#\\# Configuration:\n` +
+        `${bold("Configuration:")}\n` +
         `• ${bold("API Key:")} ${inlineCode(
           apiKey.substring(0, 8) + "..."
         )}\n` +
@@ -585,21 +577,21 @@ async function handleSetupCommand(
         `• ${bold("Debug:")} ${inlineCode(
           debug ? "Enabled" : "Disabled"
         )}\n\n` +
-        `\\#\\#\\# Next steps:\n` +
-        `• ${inlineCode("/create")} \\- Create your first event\n` +
-        `• ${inlineCode("/get")} \\- View your events\n` +
-        `• ${inlineCode("/help")} \\- See all available commands`
+        `${bold("Next steps:")}\n` +
+        `• ${inlineCode("/create")} - Create your first event\n` +
+        `• ${inlineCode("/get")} - View your events\n` +
+        `• ${inlineCode("/help")} - See all available commands`
     );
   } else {
     userConfigs.set(userId, config);
     await sendMessage(
       chatId,
       `${bold("Setup Incomplete!")}\n\n` +
-        `API key wasn't configured \\(stored temporarily\\)\n` +
+        `API key wasn't configured (stored temporarily)\n` +
         `${italic(
           "Note: Make sure your API Key and BaseUrl are correct"
         )}\n\n` +
-        `\\#\\#\\# Configuration:\n` +
+        `${bold("Configuration:")}\n` +
         `• ${bold("API Key:")} ${inlineCode(
           apiKey.substring(0, 8) + "..."
         )}\n` +
@@ -609,9 +601,9 @@ async function handleSetupCommand(
         `• ${bold("Debug:")} ${inlineCode(
           debug ? "Enabled" : "Disabled"
         )}\n\n` +
-        `\\#\\#\\# Next steps:\n` +
-        `• ${inlineCode("/help setup")} \\- View setup instructions\n` +
-        `• ${inlineCode("/help")} \\- See all available commands`
+        `${bold("Next steps:")}\n` +
+        `• ${inlineCode("/help setup")} - View setup instructions\n` +
+        `• ${inlineCode("/help")} - See all available commands`
     );
   }
 }
@@ -632,7 +624,18 @@ export function parseUnifiedEventData(
   let sequenceIndex = 0;
   const sequenceFields = SEQUENCES[commandType];
 
+  console.log("🔍 Starting parsing with sequenceFields:", sequenceFields);
+
   for (const segment of segments) {
+    console.log(
+      "🔍 Processing segment:",
+      segment.type,
+      "sequenceIndex:",
+      sequenceIndex,
+      "content:",
+      segment.content
+    );
+
     if (segment.type === "sequential") {
       const values = parseSequentialValues(segment.content);
 
@@ -781,8 +784,162 @@ export function parseUnifiedEventData(
           Object.assign(query, timeResult.query);
         }
 
-        if (timeResult.startTime) query.startTime = timeResult.startTime;
-        if (timeResult.endTime) query.endTime = timeResult.endTime;
+        if (timeResult.startTime) {
+          query.startTime = timeResult.startTime;
+        }
+
+        if (timeResult.endTime) {
+          query.endTime = timeResult.endTime;
+        }
+
+        if (commandType === "CREATE") {
+          if (timeResult.startTime && timeResult.endTime) {
+            const oldIndex = sequenceIndex;
+            sequenceIndex = Math.max(sequenceIndex, 4);
+            console.log(
+              "🔍 Updated sequenceIndex after -rt flag:",
+              oldIndex,
+              "→",
+              sequenceIndex
+            );
+          } else if (timeResult.startTime) {
+            const oldIndex = sequenceIndex;
+            sequenceIndex = Math.max(sequenceIndex, 3);
+            console.log(
+              "🔍 Updated sequenceIndex after -rt startTime:",
+              oldIndex,
+              "→",
+              sequenceIndex
+            );
+          } else if (timeResult.endTime) {
+            const oldIndex = sequenceIndex;
+            sequenceIndex = Math.max(sequenceIndex, 4);
+            console.log(
+              "🔍 Updated sequenceIndex after -rt endTime:",
+              oldIndex,
+              "→",
+              sequenceIndex
+            );
+          }
+        } else if (commandType === "GET") {
+          if (timeResult.startTime && timeResult.endTime) {
+            sequenceIndex = Math.max(sequenceIndex, 4);
+          } else if (timeResult.startTime) {
+            sequenceIndex = Math.max(sequenceIndex, 3);
+          } else if (timeResult.endTime) {
+            sequenceIndex = Math.max(sequenceIndex, 4);
+          }
+        }
+
+        const allValues = parseSequentialValues(segment.content);
+        const remainingValues = allValues.slice(2); 
+
+        console.log("🔍 Remaining values after time parsing:", remainingValues);
+
+        for (const value of remainingValues) {
+          if (sequenceIndex < sequenceFields.length) {
+            const fieldName = sequenceFields[sequenceIndex];
+            console.log(
+              "🔍 Processing remaining value:",
+              value,
+              "for field:",
+              fieldName,
+              "at index:",
+              sequenceIndex
+            );
+
+            if (fieldName === "options") {
+              if (value.startsWith("{") && value.endsWith("}")) {
+                try {
+                  const parsed = parseValue(value);
+                  if (typeof parsed === "object" && parsed !== null) {
+                    options = parsed as ParsedOptions;
+                  }
+                } catch {
+                  // Silent error handling for options parsing
+                }
+              }
+              sequenceIndex++;
+              continue;
+            }
+
+            if (fieldName === "filter") {
+              if (value.startsWith("{") && value.endsWith("}")) {
+                try {
+                  const parsed = parseValue(value);
+                  if (typeof parsed === "object" && parsed !== null) {
+                    filter = parsed as Record<string, unknown>;
+                  }
+                } catch {
+                  // Silent error handling for filter parsing
+                }
+              }
+              sequenceIndex++;
+              continue;
+            }
+
+            const processedValue = processValue(value, fieldName);
+
+            if (fieldName === "customData" && value.includes("} {")) {
+              const separated = separateCombinedJSONObjects(value);
+
+              if (separated.length >= 2) {
+                const secondObj = separated[1];
+                if (secondObj.startsWith("{") && secondObj.endsWith("}")) {
+                  try {
+                    const parsed = parseValue(secondObj);
+                    if (typeof parsed === "object" && parsed !== null) {
+                      const objData = parsed as Record<string, unknown>;
+                      const validOptionKeys = [
+                        "limit",
+                        "offset",
+                        "sortBy",
+                        "sortOrder",
+                        "isSigned",
+                        "savingRule",
+                      ];
+
+                      const hasValidOptionKey = Object.keys(objData).some(
+                        (key) => validOptionKeys.includes(key)
+                      );
+
+                      if (hasValidOptionKey) {
+                        options = objData as ParsedOptions;
+                      }
+                    }
+                  } catch {
+                    // Silent error handling for combined object options parsing
+                  }
+                }
+              }
+            }
+
+            if (processedValue !== null) {
+              if (
+                typeof processedValue === "object" &&
+                processedValue !== null &&
+                "operator" in processedValue &&
+                processedValue.operator
+              ) {
+                Object.assign(
+                  query,
+                  (
+                    processedValue as {
+                      operator: true;
+                      query: Record<string, unknown>;
+                    }
+                  ).query
+                );
+              } else {
+                query[fieldName] = processedValue;
+                console.log("🔍 Set field:", fieldName, "=", processedValue);
+              }
+            }
+            sequenceIndex++;
+          } else {
+            sequenceIndex++;
+          }
+        }
       } else if (fieldName) {
         if (fieldName !== "filter") {
           let processedValue;
@@ -910,37 +1067,37 @@ export function formatEventsResponse(
 
     const title = event.title || "Untitled Event";
     parts.push(
-      `${bold(String(index + 1))}\\. ${bold(escapeMarkdownV2(title as string))}`
+      `${bold(String(index + 1))}. ${bold(escapeMarkdown(title as string))}`
     );
 
     if (event.description) {
       parts.push(
-        `   ${bold("Description:")} ${escapeMarkdownV2(
+        `   ${bold("Description:")} ${escapeMarkdown(
           event.description as string
         )}`
       );
     }
 
     if (event.type) {
-      parts.push(`   ${bold("Type:")} ${inlineCode(event.type as string)}`);
+      parts.push(`   ${bold("Type:")} ${event.type as string}`);
     }
 
     if (event.startTime) {
       const startTime = new Date(event.startTime as string).toLocaleString();
-      parts.push(`   ${bold("Start:")} ${inlineCode(startTime)}`);
+      parts.push(`   ${bold("Start:")} ${startTime}`);
     }
 
     if (event.endTime) {
       const endTime = new Date(event.endTime as string).toLocaleString();
-      parts.push(`   ${bold("End:")} ${inlineCode(endTime)}`);
+      parts.push(`   ${bold("End:")} ${endTime}`);
     }
 
     if (event.repeat !== null && event.repeat !== undefined) {
-      parts.push(`   ${bold("Repeat:")} ${inlineCode(String(event.repeat))}`);
+      parts.push(`   ${bold("Repeat:")} ${String(event.repeat)}`);
     }
 
     if (event.color) {
-      parts.push(`   ${bold("Color:")} ${inlineCode(event.color as string)}`);
+      parts.push(`   ${bold("Color:")} ${event.color as string}`);
     }
 
     if (event.resource) {
@@ -961,7 +1118,7 @@ export function formatEventsResponse(
     }
 
     if (event.id) {
-      parts.push(`   ${bold("ID:")} ${inlineCode(String(event.id))}`);
+      parts.push(`   ${bold("ID:")} ${String(event.id)}`);
     }
 
     return parts.join("\n");
@@ -974,8 +1131,7 @@ export function formatEventsResponse(
 
   if (events.length > 10) {
     return (
-      message +
-      `\n\n${italic(`\\.\\.\\.  and ${events.length - 10} more events`)}`
+      message + `\n\n${italic(`...  and ${events.length - 10} more events`)}`
     );
   }
 

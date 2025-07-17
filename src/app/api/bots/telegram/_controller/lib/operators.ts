@@ -23,7 +23,6 @@ export function parseTopLevelOperators(content: string): string[] {
   let i = 0;
 
   while (i < content.length) {
-    // Skip whitespace
     while (i < content.length && /\s/.test(content[i])) {
       i++;
     }

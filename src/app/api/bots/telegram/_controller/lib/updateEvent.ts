@@ -5,14 +5,14 @@ import {
   UserInfo,
 } from "@/app/api/bots/telegram/_controller/lib/types";
 import { FLAGS } from "@/app/api/bots/telegram/_controller/lib/constants";
-import { parseUnifiedEventData } from "@/app/api/bots/telegram/_controller/lib/telegram";
+import { parseUnifiedEventData, sendMessage } from "@/app/api/bots/telegram/_controller/lib/telegram";
 import { toOperationOptions } from "@/app/api/bots/telegram/_controller/lib/helpers";
 import {
   bold,
   inlineCode,
   italic,
-  sendMessage,
-} from "@/app/api/bots/telegram/_controller/lib/telegram";
+
+} from "@/app/api/bots/telegram/_controller/lib/formatting";
 
 export async function handleUpdateCommand(
   chatId: number,
@@ -30,7 +30,7 @@ export async function handleUpdateCommand(
         `${inlineCode("/setup YOUR_API_KEY")}\n` +
         `Need help? Type ${inlineCode(
           "/help setup"
-        )} for detailed instructions\\.`
+        )} for detailed instructions.`
     );
     return;
   }
@@ -49,11 +49,11 @@ export async function handleUpdateCommand(
       await sendMessage(
         chatId,
         `${bold("Update Command Error")}\n\n` +
-          `${updateData.error}\\.\n\n` +
+          `${updateData.error}.\n\n` +
           `${italic("Example:")} ${inlineCode(
             '/update -t "Meeting" -to -t "Updated Meeting"'
           )}\n\n` +
-          `Type ${inlineCode("/help update")} for more examples\\.`
+          `Type ${inlineCode("/help update")} for more examples.`
       );
       return;
     }
@@ -62,13 +62,13 @@ export async function handleUpdateCommand(
       await sendMessage(
         chatId,
         `${bold("Missing Selection Criteria")}\n\n` +
-          `Update command requires selection criteria\\. Use flags like ${inlineCode(
+          `Update command requires selection criteria. Use flags like ${inlineCode(
             "-t"
-          )}, ${inlineCode("-d")} to specify which events to update\\.\n\n` +
+          )}, ${inlineCode("-d")} to specify which events to update.\n\n` +
           `${italic("Example:")} ${inlineCode(
             '/update -t "Meeting" -to -t "Updated Meeting"'
           )}\n\n` +
-          `Type ${inlineCode("/help update")} for more examples\\.`
+          `Type ${inlineCode("/help update")} for more examples.`
       );
       return;
     }
@@ -83,10 +83,20 @@ export async function handleUpdateCommand(
           `${italic("Example:")} ${inlineCode(
             '/update -t "Meeting" -to -repeat 7'
           )}\n\n` +
-          `Type ${inlineCode("/help update")} for more examples\\.`
+          `Type ${inlineCode("/help update")} for more examples.`
       );
       return;
     }
+
+    console.log("Database Operation Prepared:", {
+      commandType: "UPDATE",
+      query: updateData.target,
+      updates: updateData.updates,
+      options: updateData.options
+        ? toOperationOptions(updateData.options)
+        : undefined,
+      inputText: text,
+    });
 
     const result = await loomCalClient
       .updateEvents({
@@ -99,19 +109,12 @@ export async function handleUpdateCommand(
       .execute();
 
     if (result.success) {
-      const operations = result.operations || [];
-      const updatedCount = operations.reduce(
-        (count, op) => count + (op.result?.modifiedCount || 0),
-        0
-      );
-
       await sendMessage(
         chatId,
-        `${bold("✅ Event Updated Successfully!")}\n\n` +
-          `${updatedCount} event\\(s\\) were updated\\.\n\n` +
-          `\\#\\#\\# Next steps:\n` +
-          `• ${inlineCode("/get")} \\- View your updated events\n` +
-          `• ${inlineCode("/help")} \\- See all available commands`
+        `${bold("Event Updated Successfully!")}\n\n` +
+          `${bold("### Next steps:")}\n` +
+          `• ${inlineCode("/get")} - View your updated events\n` +
+          `• ${inlineCode("/help")} - See all available commands`
       );
     } else {
       await sendMessage(
@@ -121,7 +124,7 @@ export async function handleUpdateCommand(
           `• Selection criteria matches existing events\n` +
           `• Update data format is correct\n` +
           `• JSON syntax is valid\n\n` +
-          `Need help? Type ${inlineCode("/help update")} for examples\\.`
+          `Need help? Type ${inlineCode("/help update")} for examples.`
       );
     }
   } catch (error) {
@@ -131,7 +134,7 @@ export async function handleUpdateCommand(
         `${italic("Error:")} ${
           error instanceof Error ? error.message : "Unknown error"
         }\n\n` +
-        `Type ${inlineCode("/help update")} for proper syntax and examples\\.`
+        `Type ${inlineCode("/help update")} for proper syntax and examples.`
     );
   }
 }

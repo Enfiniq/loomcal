@@ -4,6 +4,11 @@ export function parseValue(value: string): unknown {
   if (value === "true") return true;
   if (value === "false") return false;
 
+  if (/^!\d+\.?\d*$/.test(value)) {
+    const num = parseFloat(value.slice(1));
+    return isNaN(num) ? value : -num;
+  }
+
   if (/^-?\d+\.?\d*$/.test(value)) {
     const num = parseFloat(value);
     return isNaN(num) ? value : num;
@@ -23,7 +28,15 @@ export function parseValue(value: string): unknown {
     try {
       return JSON.parse(value);
     } catch {
-      return value;
+      try {
+        const fixedValue = value.replace(
+          /([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g,
+          '$1"$2":'
+        );
+        return JSON.parse(fixedValue);
+      } catch {
+        return value;
+      }
     }
   }
 
@@ -41,6 +54,14 @@ export function parseCriticalObject(content: string): unknown {
   try {
     return JSON.parse(content);
   } catch {
-    return parseValue(content);
+    try {
+      const fixedContent = content.replace(
+        /([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g,
+        '$1"$2":'
+      );
+      return JSON.parse(fixedContent);
+    } catch {
+      return parseValue(content);
+    }
   }
 }

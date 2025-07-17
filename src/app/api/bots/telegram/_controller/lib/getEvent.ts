@@ -61,11 +61,11 @@ export async function handleGetCommand(
         await sendMessage(
           chatId,
           `${bold("No Events Found")}\n\n` +
-            `No events match your search criteria\\.\n\n` +
-            `${italic("Try:")}\n` +
-            `• ${inlineCode("/get")} \\- View all events\n` +
-            `• ${inlineCode("/get -t meeting")} \\- Search by title\n` +
-            `• ${inlineCode("/help get")} \\- See more examples`
+            `No events match your search criteria.\n\n` +
+            `${bold("Try:")}\n` +
+            `• ${inlineCode("/get")} - View all events\n` +
+            `• ${inlineCode("/get -t meeting")} - Search by title\n` +
+            `• ${inlineCode("/help get")} - See more examples`
         );
       } else {
         const formattedMessage = formatEventsResponse(events);
@@ -76,7 +76,7 @@ export async function handleGetCommand(
         chatId,
         `${bold(
           "Failed to get events"
-        )}\\. Please check your filters and try again\\.`
+        )}. Please check your filters and try again.`
       );
     }
   } catch (error) {
@@ -86,7 +86,7 @@ export async function handleGetCommand(
         `${italic("Error:")} ${
           error instanceof Error ? error.message : "Unknown error"
         }\n\n` +
-        `Type ${inlineCode("/help get")} for proper syntax and examples\\.`
+        `Type ${inlineCode("/help get")} for proper syntax and examples.`
     );
   }
 }

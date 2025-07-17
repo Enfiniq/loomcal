@@ -14,10 +14,10 @@ export function parseSequentialValues(content: string): string[] {
     if (!inQuotes && (char === '"' || char === "'")) {
       inQuotes = true;
       quoteChar = char;
-      current += char; // Include the opening quote
+      current += char; 
     } else if (inQuotes && char === quoteChar && content[i - 1] !== "\\") {
       inQuotes = false;
-      current += char; // Include the closing quote
+      current += char; 
       quoteChar = "";
     } else if (!inQuotes && char === "(") {
       parenLevel++;
@@ -134,7 +134,6 @@ function parseSequentialArguments(cleanText: string): string[] {
   let i = 0;
 
   while (i < cleanText.length) {
-    // Skip whitespace
     while (i < cleanText.length && /\s/.test(cleanText[i])) {
       i++;
     }

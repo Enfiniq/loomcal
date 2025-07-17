@@ -5,14 +5,14 @@ import {
   UserInfo,
 } from "@/app/api/bots/telegram/_controller/lib/types";
 // import { FLAGS } from "@/app/api/bots/telegram/_controller/lib/constants";
-import { parseUnifiedEventData } from "@/app/api/bots/telegram/_controller/lib/telegram";
+import { parseUnifiedEventData, sendMessage } from "@/app/api/bots/telegram/_controller/lib/telegram";
 import { toOperationOptions } from "@/app/api/bots/telegram/_controller/lib/helpers";
 import {
   bold,
   inlineCode,
   italic,
-  sendMessage,
-} from "@/app/api/bots/telegram/_controller/lib/telegram";
+  
+} from "@/app/api/bots/telegram/_controller/lib/formatting";
 
 export async function handleDeleteCommand(
   chatId: number,
@@ -30,7 +30,7 @@ export async function handleDeleteCommand(
         `${inlineCode("/setup YOUR_API_KEY")}\n` +
         `Need help? Type ${inlineCode(
           "/help setup"
-        )} for detailed instructions\\.`
+        )} for detailed instructions.`
     );
     return;
   }
@@ -49,9 +49,9 @@ export async function handleDeleteCommand(
       await sendMessage(
         chatId,
         `${bold("Delete Command Error")}\n\n` +
-          `${deleteData.error}\\.\n\n` +
+          `${deleteData.error}.\n\n` +
           `${italic("Example:")} ${inlineCode('/delete -t "Meeting"')}\n\n` +
-          `Type ${inlineCode("/help delete")} for more examples\\.`
+          `Type ${inlineCode("/help delete")} for more examples.`
       );
       return;
     }
@@ -60,11 +60,11 @@ export async function handleDeleteCommand(
       await sendMessage(
         chatId,
         `${bold("Missing Selection Criteria")}\n\n` +
-          `Delete command requires selection criteria\\. Use flags like ${inlineCode(
+          `Delete command requires selection criteria. Use flags like ${inlineCode(
             "-t"
-          )}, ${inlineCode("-d")} to specify which events to delete\\.\n\n` +
+          )}, ${inlineCode("-d")} to specify which events to delete.\n\n` +
           `${italic("Example:")} ${inlineCode('/delete -t "Meeting"')}\n\n` +
-          `Type ${inlineCode("/help delete")} for more examples\\.`
+          `Type ${inlineCode("/help delete")} for more examples.`
       );
       return;
     }
@@ -72,7 +72,9 @@ export async function handleDeleteCommand(
     console.log("Database Operation Prepared:", {
       commandType: "DELETE",
       query: deleteData.target,
-      options: deleteData.options,
+      options: deleteData.options
+        ? toOperationOptions(deleteData.options)
+        : undefined,
       inputText: text,
     });
 
@@ -86,19 +88,12 @@ export async function handleDeleteCommand(
       .execute();
 
     if (result.success) {
-      const operations = result.operations || [];
-      const deletedCount = operations.reduce(
-        (count, op) => count + (op.result?.deletedCount || 0),
-        0
-      );
-
       await sendMessage(
         chatId,
-        `${bold("🗑️ Event Deleted Successfully!")}\n\n` +
-          `${deletedCount} event\\(s\\) were deleted\\.\n\n` +
-          `\\#\\#\\# Next steps:\n` +
-          `• ${inlineCode("/get")} \\- View your remaining events\n` +
-          `• ${inlineCode("/help")} \\- See all available commands`
+        `${bold("Event Deleted Successfully!")}\n\n` +
+          `${bold("### Next steps:")}\n` +
+          `• ${inlineCode("/get")} - View your remaining events\n` +
+          `• ${inlineCode("/help")} - See all available commands`
       );
     } else {
       await sendMessage(
@@ -108,7 +103,7 @@ export async function handleDeleteCommand(
           `• Selection criteria matches existing events\n` +
           `• Query format is correct\n` +
           `• JSON syntax is valid\n\n` +
-          `Need help? Type ${inlineCode("/help delete")} for examples\\.`
+          `Need help? Type ${inlineCode("/help delete")} for examples.`
       );
     }
   } catch (error) {
@@ -118,7 +113,7 @@ export async function handleDeleteCommand(
         `${italic("Error:")} ${
           error instanceof Error ? error.message : "Unknown error"
         }\n\n` +
-        `Type ${inlineCode("/help delete")} for proper syntax and examples\\.`
+        `Type ${inlineCode("/help delete")} for proper syntax and examples.`
     );
   }
 }
