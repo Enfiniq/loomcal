@@ -9,13 +9,14 @@ import { ERROR_MESSAGES } from "@/app/api/bots/telegram/_controller/lib/constant
 import {
   parseUnifiedEventData,
   formatEventsResponse,
+  sendMessage,
 } from "@/app/api/bots/telegram/_controller/lib/telegram";
 import {
   bold,
   inlineCode,
   italic,
-  sendMessage,
-} from "@/app/api/bots/telegram/_controller/lib/telegram";
+  
+} from "@/app/api/bots/telegram/_controller/lib/formatting";
 
 export async function handleGetCommand(
   chatId: number,
