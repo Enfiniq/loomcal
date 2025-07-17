@@ -25,10 +25,10 @@ LoomCal is built with a modular, scalable architecture designed for modern appli
 - **Batch Processing**: Automatic optimization for multiple operations
 
 ### 🤖 **Bots** - Multi-Platform Integrations
-- **Slack Bot**: Native workspace integration for team event tracking
-- **Discord Bot**: Community and gaming event management
-- **Telegram Bot**: Personal and group activity tracking
-- **Signal Bot**: Privacy-focused secure communications
+- **Slack Bot**: Native workspace integration for team event tracking (Future)
+- **Discord Bot**: Community and gaming event management (Future)
+- **Telegram Bot**: Personal and group activity tracking [Completed](https://web.telegram.org/k/#@LoomCalBot)
+- **Signal Bot**: Privacy-focused secure communications (Future)
 
 ### 🧩 **Components** - Reusable UI Library
 - **Calendar Views**: Multiple layout options (month, week, day, list)
@@ -237,20 +237,11 @@ const [newUser, userEvents] = await client
 
 ## 🤖 Bot Integration
 
-### Slack Bot
-Add the LoomCal bot to your Slack workspace for quick event management:
-```
-/loomcal create "Project Deadline" "Discuss project updates and next steps" -rt 0 30 -c #ff0000
-```
-
 ### Telegram Bot
 Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage your events on the go.
 
 #### Documentation
 [📖 **Telegram Bot Documentation →**](/src/app//api//bots/telegram/_controller/lib/README.md)
-
-### Discord Bot
-Invite the LoomCal bot to your Discord server for team event coordination.
 
 ## 🛠️ Configuration
 
