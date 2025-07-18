@@ -1,30 +1,47 @@
-# LoomCal Telegram Bot - Step-by-Step User Guide
+# LoomCal Telegram Bot
 
 A powerful Telegram bot for managing calendar events through the LoomCal API. This guide will take you from basic setup to advanced querying and filtering operations.
 
-[LoomCalBot](https://t.me/LoomCalBot)
+Start Tracking your events: [LoomCalBot](https://t.me/LoomCalBot)
+
+If you're on web: [LoomCalBot](https://web.telegram.org/k/#@LoomCalBot)
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: PostgreSQL
+- **API**: REST
+- **Authentication**: NextAuth.js
+
+## Idea
+ 
+LoomCalBot is a subset of the conceot of LoomCal, where you can chat with your friends, or do some telegram stuffs, and without even toggling the tab, track the events on the go. It can be used in so different ways. One of the most prominent way i can think of is replacing database for small scale single tenant application which needs to track events at a small scale. Events can be anything; Completed a book, Admitted to hospital, Gonna visit Nepal, Watched a movie, Read a wiki, Researched about NepLoom and so on. 
 
 ---
 
+
+
 # 📚 Documentation
 
-## 🟢 **Basics** - Essential Setup & Simple Operations
+## **Basics** - Essential Setup & Simple Operations
 - [Quick Start](#-quick-start)
 - [Basic Event Creation](#-basics-creating-events)
 - [Simple Queries](#-basics-querying-events)
 - [Basic Updates & Deletions](#-basics-updating--deleting-events)
 
-## 🟡 **Intermediate** - Structured Data & Options
+## **Intermediate** - Structured Data & Options
 - [Working with Time](#-intermediate-time-handling)
 - [Using Quotes & Special Characters](#-intermediate-using-quotes-for-special-values)
 - [Query Options (Pagination, Sorting)](#-intermediate-query-options)
 - [Custom Data & JSON Objects](#-intermediate-custom-data--json)
 
-## 🔴 **Advanced** - Complex Filtering & Operations
+## **Advanced** - Complex Filtering & Operations
 - [Direct Operator Usage](#-advanced-direct-operator-usage)
 - [Complex Filter Logic](#-advanced-complex-filtering-with-filter-flag)
 - [Bulk Operations](#-advanced-bulk-operations)
 - [Mixed Approaches & Best Practices](#-advanced-mixed-approaches--best-practices)
+- [Quick Reference](#-quick-reference)
 
 ---
 
@@ -60,7 +77,7 @@ Configure the bot with your LoomCal API key:
 
 ---
 
-# 🟢 Basics: Creating Events
+# Basics: Creating Events
 
 Start with simple event creation using sequential format or basic flags.
 
@@ -91,24 +108,9 @@ Start with simple event creation using sequential format or basic flags.
 /create -t "Project Review" -d "Q4 review" -rt 120 180 -type "meeting" -repeat "weekly" -color "blue"
 ```
 
-### Field Values Reference
-
-**Repeat Field Values (String):**
-- `"daily"` - Repeats every day
-- `"weekly"` - Repeats every week  
-- `"monthly"` - Repeats every month
-- `"yearly"` - Repeats every year
-- `"none"` - No repeat (one-time event)
-
-**Common Color Values:**
-- `"red"`, `"blue"`, `"green"`, `"yellow"`, `"purple"`, `"orange"`, `"gray"`
-
-**Common Type Values:**
-- `"meeting"`, `"call"`, `"conference"`, `"work"`, `"personal"`, `"reminder"`
-
 ---
 
-# 🟢 Basics: Querying Events
+# Basics: Querying Events
 
 Start with simple queries to find your events.
 
@@ -137,7 +139,7 @@ Start with simple queries to find your events.
 
 ---
 
-# 🟢 Basics: Updating & Deleting Events
+# Basics: Updating & Deleting Events
 
 Learn to modify and remove events with simple criteria.
 
@@ -167,7 +169,7 @@ Learn to modify and remove events with simple criteria.
 
 ---
 
-# 🟡 Intermediate: Time Handling
+# Intermediate: Time Handling
 
 Learn different ways to specify event times.
 
@@ -178,6 +180,11 @@ Specify time in minutes from now:
 /create -t "Meeting" -rt 30 90
 ```
 *Creates event starting 30 minutes from now, ending 90 minutes from now*
+
+```
+/create -t "Meeting" -rt !30 90
+```
+*Creates event starting 30 minutes ago, ending 90 minutes from now*
 
 ### Absolute Time (`-at`)
 Specify exact ISO timestamps:
@@ -194,7 +201,7 @@ Specify exact ISO timestamps:
 
 ---
 
-# 🟡 Intermediate: Using Quotes for Special Values
+# Intermediate: Using Quotes for Special Values
 
 Learn when and how to use quotes for complex values.
 
@@ -223,7 +230,7 @@ Use double quotes (`"`) to encapsulate values that contain:
 
 ---
 
-# 🟡 Intermediate: Query Options
+# Intermediate: Query Options
 
 Learn to control how results are returned (pagination, sorting, etc.).
 
@@ -259,7 +266,7 @@ Learn to control how results are returned (pagination, sorting, etc.).
 
 ---
 
-# 🟡 Intermediate: Custom Data & JSON
+# Intermediate: Custom Data & JSON
 
 Learn to work with custom data and JSON objects.
 
@@ -294,7 +301,7 @@ Learn to work with custom data and JSON objects.
 
 ---
 
-# 🔴 Advanced: Direct Operator Usage
+# Advanced: Direct Operator Usage
 
 Master using operators directly with flags for powerful queries.
 
@@ -342,7 +349,7 @@ Master using operators directly with flags for powerful queries.
 
 ---
 
-# 🔴 Advanced: Complex Filtering with Filter Flag
+# Advanced: Complex Filtering with Filter Flag
 
 Use the `-f` flag for complex MongoDB-style queries.
 
@@ -384,7 +391,7 @@ Use the `-f` flag for complex MongoDB-style queries.
 
 ---
 
-# 🔴 Advanced: Bulk Operations
+# Advanced: Bulk Operations
 
 Perform operations on multiple events efficiently.
 
@@ -424,7 +431,7 @@ Perform operations on multiple events efficiently.
 
 ---
 
-# 🔴 Advanced: Mixed Approaches & Best Practices
+# Advanced: Mixed Approaches & Best Practices
 
 Combine different techniques for maximum flexibility.
 
@@ -445,7 +452,7 @@ Combine different techniques for maximum flexibility.
 **Complete Event Management Workflow**
 ```
 # 1. Create complex event
-/create -t "Q4 All-Hands Meeting" -d "Quarterly company meeting with presentations" -at "2024-12-15T14:00:00Z" "2024-12-15T16:00:00Z" -type "company-meeting" -repeat "quarterly" -color "purple" -r "https://meet.company.com/q4-meeting" -c {"mandatory": true, "departments": ["engineering", "sales", "marketing"], "presenter": "CEO", "agenda": "Q4 results and Q1 planning"} -o {"isSigned": {"check": true, "createUser": true}, "savingRule": {"onDuplicate": "update", "uniquenessFields": ["title", "startTime"]}}
+/create -t "Q4 All-Hands Meeting" -d "Quarterly company meeting with presentations" -at "2024-12-15T14:00:00Z" "2024-12-15T16:00:00Z" -type "company-meeting" -repeat "quarterly" -color "purple" -r "https://meet.company.com/q4-meeting" -c {"mandatory": true, "departments": ["engineering", "sales", "marketing"], "presenter": "CEO", "agenda": "Q4 results and Q1 planning"} -o {"isSigned": {"check": true, "createUser": true, "strict": false}, "savingRule": {"timeBetweenDuplicates": -1,"onDuplicate": "update", "uniquenessFields": ["title", "startTime"]}}
 
 # 2. Query with complex conditions
 /get -f {"$and": [{"type": "meeting"}, {"$or": [{"customData.priority": "high"}, {"customData.urgent": true}]}, {"startTime": {"$gte": "2024-01-01T00:00:00Z"}}, {"repeat": {"$ne": "none"}}]} -o {"limit": 20, "sortBy": "startTime", "sortOrder": "asc"}
@@ -453,6 +460,29 @@ Combine different techniques for maximum flexibility.
 # 3. Complex update with mixed approach
 /update -t $regex("(?i)old.*meeting") -repeat $in("daily", "weekly") -to -t "Updated Recurring Meeting" -color "green"
 ```
+
+## 📚 Quick Reference
+
+### Available Flags Reference
+
+| Flag | Description | Usage | Example |
+|------|-------------|-------|---------|
+| `-t` | Title | `-t "Meeting Title"` | `/get -t "Team Meeting"` |
+| `-d` | Description | `-d "Meeting description"` | `/create -t "Meeting" -d "Weekly sync"` |
+| `-rt` | Relative time | `-rt 60 120` (minutes from now) | `/create -t "Meeting" -rt 30 90` |
+| `-at` | Absolute time | `-at "ISO_DATE" "ISO_DATE"` | `/create -t "Meeting" -at "2024-12-25T10:00:00Z" "2024-12-25T11:00:00Z"` |
+| `-s` | Start time | `-rt -s 60` or `-at -s "ISO_DATE"` | `/create -t "Meeting" -rt -s 60 -e 120` |
+| `-e` | End time | `-rt -e 120` or `-at -e "ISO_DATE"` | `/create -t "Meeting" -at -s "2024-12-25T10:00:00Z" -e "2024-12-25T11:00:00Z"` |
+| `-type` | Event type | `-type "meeting"` | `/get -type "work"` |
+| `-repeat` | Repeat pattern | `-repeat "weekly"` | ````/create -t "Meeting" -repeat "daily"```` |
+| `-color` | Event color | `-color "blue"` | `/update -t "Meeting" -to -color "red"` |
+| `-r` | Resource URL | `-r "https://meet.google.com/abc"` | `/create -t "Meeting" -r "https://zoom.us/j/123"` |
+| `-c` | Custom data (JSON) | `-c {"key": "value"}` | `/create -t "Meeting" -c {"priority": "high"}` |
+| `-o` | Options (JSON) | `-o {"limit": 10}` | `/get -o {"limit": 5, "sortBy": "startTime"}` |
+| `-f` | Filter (JSON) | `-f {"title": "Meeting"}` | `/get -f {"type": "meeting", "repeat": "weekly"}` |
+| `-to` | Update target | `-to -t "New Title"` | `/update -t "Old" -to -t "New" -color "green"` |
+
+---
 
 ### Available Operators Reference
 
@@ -472,32 +502,8 @@ Combine different techniques for maximum flexibility.
 | `$and` | Document | Logical AND | `-t $and("Meeting", $regex("(?i)team"))` |
 | `$or` | Document | Logical OR | `-priority $or("high", "urgent")` |
 
----
 
-## 📚 Quick Reference
-
-### 🏷️ Available Flags Reference
-
-| Flag | Description | Usage | Example |
-|------|-------------|-------|---------|
-| `-t` | Title | `-t "Meeting Title"` | `/get -t "Team Meeting"` |
-| `-d` | Description | `-d "Meeting description"` | `/create -t "Meeting" -d "Weekly sync"` |
-| `-rt` | Relative time | `-rt 60 120` (minutes from now) | `/create -t "Meeting" -rt 30 90` |
-| `-at` | Absolute time | `-at "ISO_DATE" "ISO_DATE"` | `/create -t "Meeting" -at "2024-12-25T10:00:00Z" "2024-12-25T11:00:00Z"` |
-| `-s` | Start time | `-rt -s 60` or `-at -s "ISO_DATE"` | `/create -t "Meeting" -rt -s 60 -e 120` |
-| `-e` | End time | `-rt -e 120` or `-at -e "ISO_DATE"` | `/create -t "Meeting" -at -s "2024-12-25T10:00:00Z" -e "2024-12-25T11:00:00Z"` |
-| `-type` | Event type | `-type "meeting"` | `/get -type "work"` |
-| `-repeat` | Repeat pattern | `-repeat "weekly"` | ````
-/create -t "Meeting" -repeat "daily"
-```` |
-| `-color` | Event color | `-color "blue"` | `/update -t "Meeting" -to -color "red"` |
-| `-r` | Resource URL | `-r "https://meet.google.com/abc"` | `/create -t "Meeting" -r "https://zoom.us/j/123"` |
-| `-c` | Custom data (JSON) | `-c {"key": "value"}` | `/create -t "Meeting" -c {"priority": "high"}` |
-| `-o` | Options (JSON) | `-o {"limit": 10}` | `/get -o {"limit": 5, "sortBy": "startTime"}` |
-| `-f` | Filter (JSON) | `-f {"title": "Meeting"}` | `/get -f {"type": "meeting", "repeat": "weekly"}` |
-| `-to` | Update target | `-to -t "New Title"` | `/update -t "Old" -to -t "New" -color "green"` |
-
-### 🔍 Learning Resources
+### Learning Resources
 
 #### Built-in Help Commands
 - `/help` - General help and command overview
@@ -518,7 +524,7 @@ Combine different techniques for maximum flexibility.
 
 ---
 
-## 🔧 Troubleshooting & Best Practices
+## Troubleshooting & Best Practices
 
 ### Common Issues
 
