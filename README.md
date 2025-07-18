@@ -41,7 +41,11 @@ LoomCal is built with a modular, scalable architecture designed for modern appli
 ### 🤖 **Bots** - Multi-Platform Integrations
 - **Slack Bot**: Native workspace integration for team event tracking (Future)
 - **Discord Bot**: Community and gaming event management (Future)
+<<<<<<< HEAD
 - **Telegram Bot**: Personal and group activity tracking ([Completed](https://web.telegram.org/k/#@LoomCalBot))
+=======
+- **Telegram Bot**: Personal and group activity tracking [Completed](https://web.telegram.org/k/#@LoomCalBot)
+>>>>>>> 617bba2856614ab3920043186962f510d3afdb3f
 - **Signal Bot**: Privacy-focused secure communications (Future)
 
 ### 🧩 **Components** - Reusable UI Library
@@ -242,6 +246,24 @@ const [newUser, userEvents] = await client
   .execute();
 ```
 
+<<<<<<< HEAD
+=======
+## 📖 Documentation
+
+[📖 **Partial SDK Documentation →**](/src/sdk/README.md)
+
+[📖 **Full SDK Documentation →**](https://docs.loomcal.neploom.com)
+
+
+## 🤖 Bot Integration
+
+### Telegram Bot
+Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage your events on the go.
+
+#### Documentation
+[📖 **Telegram Bot Documentation →**](/src/app//api//bots/telegram/_controller/lib/README.md)
+
+>>>>>>> 617bba2856614ab3920043186962f510d3afdb3f
 ## 🛠️ Configuration
 
 ### Environment Variables
