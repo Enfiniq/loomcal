@@ -1,107 +1,83 @@
-# �️ LoomCal - Modern Event Tracking Platform
+# LoomCal 
 
-LoomCal is a powerful, flexible event tracking platform that treats **everything as an event**. Whether it's learning progress, user activities, system events, or custom workflows, LoomCal provides comprehensive APIs, SDKs, and integrations to capture, analyze, and act upon any trackable action.
+LoomCal is a powerful, flexible event tracking platform that treats **everything as an event**. Whether it's learning progress, user activities, system events, or custom workflows, LoomCal provides Bots, APIs, SDKs, and integrations to capture, analyze, and act upon any trackable action.
 
 ## SDK Documentation
 
-[📖 **Partial SDK Documentation →**](/src/sdk/README.md)
+[**Partial SDK Documentation →**](/src/sdk/README.md)
 
-[📖 **Full SDK Documentation →**](https://docs.loomcal.neploom.com) (Yet to make)
-
-## 🤖 Bot Integration
+## Bot
 
 ### Telegram Bot
 Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage your events on the go.
 
 #### Documentation
-[📖 **Telegram Bot Documentation →**](/src/app//api//bots/telegram/_controller/lib/README.md)
+[**Telegram Bot Documentation →**](/src/app//api//bots/telegram/_controller/lib/README.md)
 
-## 🏗️ Architecture Overview
+## Tech Stack
 
-LoomCal is built with a modular, scalable architecture designed for modern applications:
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: PostgreSQL
+- **API**: REST
 
-### 📱 **App** - Web Application & Dashboard
-- **Admin Dashboard**: Manage organizations, API keys, and view analytics
-- **User Authentication**: Secure sign-in/sign-up with NextAuth.js
-- **Real-time Analytics**: Live event tracking and visualization
-- **Organization Management**: Multi-tenant architecture with role-based access
+## Support
 
-### 🔌 **API** - RESTful & Bulk Operations
+- 📧 Email: info@neploom.com
+- 🐛 Issues: [GitHub Issues](https://github.com/Enfiniq/loomcal/issues)
+
+## Contributors
+
+- **Enfiniq (me)** —> SDK, API, Telegram Bot and APP development
+- **AI** —> Helped with README generation, copy writing, adding comments, regex, constants, parsing logic, scanning logic, message texts, and optimising the logic for flag detection.
+
+## Acknowledgments
+
+- Inspired by modern calendar applications
+  
+##  Architecture Overview
+
+### 🤖 **Bots**
+- **Telegram Bot**: Personal and group activity tracking ([Link](https://web.telegram.org/k/#@LoomCalBot))
+  
+### **API** - RESTful & Bulk Operations
 - **RESTful Endpoints**: Standard CRUD operations for events and users
 - **Bulk Operations**: High-performance batch processing via `/api/operations/bulk`
 - **API Key Authentication**: Secure access control with rate limiting
 - **PostgreSQL Backend**: Optimized stored procedures for complex queries
 
-### � **SDK** - TypeScript/JavaScript Client
+### **SDK** - TypeScript/JavaScript Client
 - **Modern TypeScript SDK**: Type-safe client with intelligent API handling
 - **Chainable Operations**: Fluent interface for complex workflows
 - **React Components**: Ready-to-use UI components with hooks
 - **Batch Processing**: Automatic optimization for multiple operations
-
-### 🤖 **Bots** - Multi-Platform Integrations
-- **Slack Bot**: Native workspace integration for team event tracking (Future)
-- **Discord Bot**: Community and gaming event management (Future)
-- **Telegram Bot**: Personal and group activity tracking ([Completed](https://web.telegram.org/k/#@LoomCalBot))
-- **Signal Bot**: Privacy-focused secure communications (Future)
-
-### 🧩 **Components** - Reusable UI Library
-- **Calendar Views**: Multiple layout options (month, week, day, list)
-- **Event Forms**: Configurable creation and editing interfaces
-- **Analytics Widgets**: Charts, graphs, and data visualization
-- **Theme System**: Customizable design tokens and styling
+- 
 
 ## ✨ Core Features
 
 ### 🎯 **Flexible Event Model**
 - **Universal Events**:
-  - Track any action, commitment, or activity
-  - Extensible event types system
-  - Custom event hierarchies
-  - Event relationship mapping
 - **Rich Metadata**:
-  - Structured custom fields with validation
-  - Resource attachments and references
-  - Contextual data with inheritance
-  - Dynamic schema evolution
 - **User Relationships**:
-  - Multi-user event associations
-  - Role-based event access
-  - User group hierarchies
   - `linkedUserId` system for external integrations
 - **Time Tracking**:
-  - Precise start/end times with microsecond accuracy
-  - Timezone-aware scheduling
-  - Recurring event patterns
-  - Duration-based calculations
 
 ### � **Enterprise Security**
 - **API Key Management**: Secure authentication with scope control
 - **CORS Protection**: Origin-based access control for browser requests
 - **Rate Limiting**: Configurable limits to prevent abuse
-- **Data Isolation**: Multi-tenant architecture with organization boundaries
 
 ### ⚡ **High Performance**
 - **Bulk Operations**: Process thousands of events in single requests with automatic batching
 - **Query Optimization**: 
   - MongoDB-style operators ($and, $or, $in, $exists, $regex)
-  - Compound queries with nested operators
-  - Automatic index utilization
-  - Query plan optimization
 - **Database Efficiency**: 
   - Optimized PostgreSQL stored procedures
-  - Parallel query execution
-  - Connection pooling
-  - Prepared statements
-- **Intelligent Caching**: 
-  - Multi-level cache architecture
-  - Redis integration for distributed caching
-  - Cache invalidation strategies
-  - Automatic cache warming
+  - Method Chaining support, bulk operations support
 
 ### � **Seamless Integrations**
+- **Bot Ecosystem**: Telegram-platform presence for diverse workflows
 - **SDK-First Design**: TypeScript SDK with React components
-- **Webhook Support**: Real-time notifications for event changes
-- **Bot Ecosystem**: Multi-platform presence for diverse workflows
 - **API Compatibility**: RESTful design with predictable endpoints
 
 ## 🚀 Getting Started
@@ -242,64 +218,6 @@ const [newUser, userEvents] = await client
   .execute();
 ```
 
-## 🛠️ Configuration
-
-### Environment Variables
-
-Create a `.env.local` file in your project root:
-
-```bash
-# ================================
-# LoomCal Environment Configuration
-# ================================
-
-
-# LoomCal API configuration
-NEXT_PUBLIC_LOOMCAL_BASE_URL=https://loomcal.neploom.com
-LOOMCAL_API_KEY=lc_your_loomcal_api_key_here
-
-# Supabase configuration
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
-
-# NextAuth.js secret for session encryption (generate: openssl rand -base64 32)
-NEXTAUTH_SECRET=your_nextauth_secret_here
-
-# Your application URL (production URL or http://localhost:3000 for development)
-NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_ADMIN_SECRET=your_admin_secret_here
-
-# Base URL for API calls and redirects
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
-# Allowed origins for CORS (comma-separated, no spaces)
-ALLOWED_ORIGINS=http://localhost:3000
-
-# Secret key for API key encryption/decryption (generate: openssl rand -hex 32)
-API_KEY_SECRET=your_api_key_encryption_secret_here
-
-# Telegram Bot configuration
-BOT_URL=your_app_url_here
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
-```
-
-### Self-Hosting
-
-For self-hosting your LoomCal instance:
-
-1. Set up your preferred database (PostgreSQL, MySQL, SQLite)
-2. Configure your environment variables
-3. Run database migrations:
-```bash
-npm run db:migrate
-```
-4. Start the application in production mode:
-```bash
-npm run build
-npm start
-```
-
 ## 🧩 Component Usage
 
 LoomCal provides reusable components for integration:
@@ -321,48 +239,9 @@ function Layout({ children }) {
 }
 ```
 
-## 🏗️ Architecture
-
-LoomCal is built with modern technologies:
-
-- **Frontend**: Next.js 15, React 18, TypeScript
-- **Styling**: Tailwind CSS
-- **Database**: PostgreSQL
-- **API**: REST
-- **Authentication**: NextAuth.js
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 
-
-## 🆘 Support
-
-- 📧 Email: info@neploom.com
-- 💬 Discord: [Join our community](https://discord.gg/loomcal)
-- 📖 Documentation: [docs.loomcal.neploom.com](https://docs.loomcal.neploom.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/Enfiniq/loomcal/issues)
-
-
-## 👥 Contributors
-
-- **Enfiniq** — SDK, API, Telegram Bot and APP development
-- **AI** — Helped with README generation, copy writing, adding comments, regex, constants, parsing logic, scanning logic, message texts, and optimising the logic for flag detection.
-
-## 🙏 Acknowledgments
-
-- Inspired by modern calendar applications
+This project is licensed under the MIT License - see the [LICENSE](/src/sdk/LICENSE) file for details.
 
 ---
 
