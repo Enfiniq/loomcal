@@ -1,7 +1,9 @@
 # LoomCal Bot
 
 LoomCal Bot is a powerful, flexible event tracking bot that treats **everything as an event**. Whether it's learning progress, user activities, system events, or custom workflows, Bot integrations makes it easy to capture, analyze, and act upon any trackable action, while staying in the telegram application.
+
 LoomCal bot is basically a wrapper for the database (postgresql), which makes it easy to create, update, read and delete the events.
+
 Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage your events on the go.
 
 ## Tech Stack
@@ -12,25 +14,35 @@ Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage yo
 - **API**: REST
   
 ## Setup
-Firstly, head to this url: [Web](https://web.telegram.org/k/#@LoomCalBot) or [T](https://t.me/LoomCalBot)
+
+Firstly, head to this url: [Telegram Web](https://web.telegram.org/k/#@LoomCalBot) or [Telegram app](https://t.me/LoomCalBot). 
+
 Then, /start will make introduce with few commands.
+
 Then, /help command will make you clear about the available commands.
+
 If you need help for certain available commands like /create, /get, /update, /delete, then type /help [commandName]. e.g. /help create.
+
 Then, setup your LoomCal Bot using an API Key. For now, you can use the command below.
-`bash
-/setup -api lc_test_2468ac3f5fee5705a68f267c2d66a32d -base https://loomcal.neploom.com
-`
+
+```
+/setup lc_test_2468ac3f5fee5705a68f267c2d66a32d https://loomcal.neploom.com
+```
+
 Then, start using the LoomCal Bot.
 
 ### /create
+
 If you decide to create an event using LoomCal Bot, /create would be used to create those events.
 There are two ways of creating event. 
+
 (1) First way is arranging your data about events like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), and options.
 ```
 /create [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options]
 ```
 e.g.
 /create "Workout" "At Nepal Gym" 0 45 "gym" "daily" "#0000ff" "https://nepalgym.com/exercise/triceps" {"price": 500}
+
 (2) Second way is using flags. Using flags will allow you to break the order of data to be passed.
 ```
 /create -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options]
@@ -42,20 +54,24 @@ So, Moral of the story is if you want quick and easy operations use First way, a
 And, If you're using Second way, keep in mind that you can mix the sequence, and wherever you want to break the sequence, onwards use flags. 
 
 ### /get 
+
 If you decide to get the created events using LoomCal Bot, /get would be used to get those events.
 There are three ways of getting events.
+
 (1) First way helps you retrive all the events.
 ```
 /get
 ```
 e.g.
 /get
+
 (2) Second way is passing the value you expect from the events like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), options, and filters.
 ```
 /get [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filters]
 ```
 e.g.
 /get "Workout" "At Nepal Gym"
+
 (3) Third way is using flags. Using flags will allow you to break the order of data to be passed.
 ```
 /get -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options] -f [filters]
@@ -64,15 +80,19 @@ e.g.
 /get -t "Workout"  -repeat "daily"
 
 ### /update 
+
 If you decide to update the event using LoomCal Bot, /update would be used to delete those events.
 There are two ways of updating events.
+
 (1) First way is passing the values you expect the events have, so that you can pass the data to be updated like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), options, and filters and using -to flag to pass the data you want to update.
+
 Inshot, /update [get] -to [update]
 ```
 /update [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filters] -to [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData]
 ```
 e.g.
 /update "Workout" "At Nepal Gym" -to "Workout with Lunching"
+
 (2) Second way is using flags. Using flags will allow you to break the order of data to be passed.
 ```
 /update -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options] -f [filters] -to -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData]
@@ -81,20 +101,24 @@ e.g.
 /update -t "Workout" -repeat "daily" -to -type "making-triceps"
 
 ### /delete 
+
 If you decide to get the created events using LoomCal Bot, /delete would be used to delete those events.
 There are three ways of deleting events.
+
 (1) First way helps you delete all the events (With caution as it will delete all events)
 ```
 /delete
 ```
 e.g.
 /delete
+
 (2) Second way is passing the value you expect from the events so that those events could be deleted like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), options, and filters.
 ```
 /delete [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filters]
 ```
 e.g.
 /get "Workout" "At Nepal Gym"
+
 (3) Third way is using flags. Using flags will allow you to break the order of data to be passed.
 ```
 /delete -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options] -f [filters]
@@ -114,32 +138,42 @@ It is literally customData that you can pass as either js object format or json 
   - e.g. -rt -e 60
  
 ### operators
+
 Operators are the symbol that represent the type of comparison, logics needs to be applied for quering data.
+Here's the Basic operators used:
+
 | Operator | Type | Description | Direct Usage Example |
 |----------|------|-------------|---------------------|
 | `$eq` | Single | Equal to | `-type $eq("meeting")` |
-| `$ne` | Single | Not equal to | `-status $ne("cancelled")` |
-| `$gt` | Single | Greater than | `-duration $gt(60)` |
+| `$ne` | Single | Not equal to | `-type $ne("cancelled")` |
+| `$gt` | Single | Greater than | `-startTime $gt(60)` |
 | `$gte` | Single | Greater than or equal | `-startTime $gte("2024-01-01")` |
-| `$lt` | Single | Less than | `-duration $lt(60)` |
-| `$lte` | Single | Less than or equal | `-priority $lte(3)` |
+| `$lt` | Single | Less than | `-endTime $lt(60)` |
+| `$lte` | Single | Less than or equal | `-startTime $lte(3)` |
 | `$regex` | Single | Regular expression | `-t $regex("(?i)meeting")` |
 | `$exists` | Single | Field exists | `-c $exists(true)` |
-| `$not` | Single | Logical NOT | `-status $not("cancelled")` |
+| `$not` | Single | Logical NOT | `-type $not("cancelled")` |
 | `$in` | Multi | Value in array | `-type $in("meeting", "call")` |
-| `$nin` | Multi | Value not in array | `-status $nin("cancelled", "postponed")` |
+| `$nin` | Multi | Value not in array | `-type $nin("cancelled", "postponed")` |
 | `$and` | Document | Logical AND | `-t $and("Meeting", $regex("(?i)team"))` |
-| `$or` | Document | Logical OR | `-priority $or("high", "urgent")` |
+| `$or` | Document | Logical OR | `-type $or("high", "urgent")` |
+
 
 These list of operators can be used in LoomCal. Single means they accept single argument, Multi means they accept multiple arguments, and Document means they can have another operator as their arguments.
+
 e.g. /get $regex("Work*")
+
 e.g. /get -type $nin("workout", "gym", "making-tricepts") -t $regex("W*")
 
+
 ### Filters
+
 They are extended form of operators, mostly recommend using in SDK, but you can use here for complex queries.
+
 e.g. -f {$and: [{title: {$regex: "W*"}}, {repeat: "daily"}]}
 
 ### Options
+
 It is a USP of LoomCal. It is the options that will be checked to store, retrive, update and delete data. Commonly, you can use limit, sortBy, sortOrder, offset for get, update and delete, and use savingRule for create.
 ```
 {limit: number, offset: number, sortBy: string, sortOrder: string, savingRule: {timeBetweenDuplicates: number, uniquenessFields: string[], onDuplicate: string}}
@@ -156,9 +190,13 @@ It is a USP of LoomCal. It is the options that will be checked to store, retrive
 isSigned isnot used here! More about options can be read in the [SDK Documentation](/src/sdk/README.md).
 
 e.g. {limit: 5, offset: 5, sortBy: "startTime", sortOrder: "desc"}
+
 e.g. {savingRule: {timeBetweenDuplicates: -1, uniquenessFields: ["title"], onDuplicate: "update"}}
 
 ### Flags
+
+Flags are the symbol that helps you to break the sequence.
+
 | Flag | Description | Usage | Example |
 |------|-------------|-------|---------|
 | `-t` | Title | `-t "Meeting Title"` | `/get -t "Team Meeting"` |
