@@ -1,25 +1,182 @@
-# LoomCal 
+# LoomCal Bot
 
-LoomCal is a powerful, flexible event tracking platform that treats **everything as an event**. Whether it's learning progress, user activities, system events, or custom workflows, LoomCal provides Bots, APIs, SDKs, and integrations to capture, analyze, and act upon any trackable action.
-
-## SDK Documentation
-
-[**Partial SDK Documentation →**](/src/sdk/README.md)
-
-## Bot
-
-### Telegram Bot
+LoomCal Bot is a powerful, flexible event tracking bot that treats **everything as an event**. Whether it's learning progress, user activities, system events, or custom workflows, Bot integrations makes it easy to capture, analyze, and act upon any trackable action, while staying in the telegram application.
+LoomCal bot is basically a wrapper for the database (postgresql), which makes it easy to create, update, read and delete the events.
 Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage your events on the go.
-
-#### Documentation
-[**Telegram Bot Documentation →**](/src/app//api//bots/telegram/_controller/lib/README.md)
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript
+- **Frontend**: Next.js, React, TypeScript
 - **Styling**: Tailwind CSS
 - **Database**: PostgreSQL
 - **API**: REST
+  
+## Setup
+Firstly, head to this url: [Web](https://web.telegram.org/k/#@LoomCalBot) or [T](https://t.me/LoomCalBot)
+Then, /start will make introduce with few commands.
+Then, /help command will make you clear about the available commands.
+If you need help for certain available commands like /create, /get, /update, /delete, then type /help [commandName]. e.g. /help create.
+Then, setup your LoomCal Bot using an API Key. For now, you can use the command below.
+`bash
+/setup -api lc_test_2468ac3f5fee5705a68f267c2d66a32d -base https://loomcal.neploom.com
+`
+Then, start using the LoomCal Bot.
+
+### /create
+If you decide to create an event using LoomCal Bot, /create would be used to create those events.
+There are two ways of creating event. 
+(1) First way is arranging your data about events like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), and options.
+```
+/create [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options]
+```
+e.g.
+/create "Workout" "At Nepal Gym" 0 45 "gym" "daily" "#0000ff" "https://nepalgym.com/exercise/triceps" {"price": 500}
+(2) Second way is using flags. Using flags will allow you to break the order of data to be passed.
+```
+/create -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options]
+```
+e.g.
+/create "Workout" "At Nepal Gym" -repeat "daily" -rt 0 45 -c {"price": 500}
+
+So, Moral of the story is if you want quick and easy operations use First way, and if you want granular level control use Second way.
+And, If you're using Second way, keep in mind that you can mix the sequence, and wherever you want to break the sequence, onwards use flags. 
+
+### /get 
+If you decide to get the created events using LoomCal Bot, /get would be used to get those events.
+There are three ways of getting events.
+(1) First way helps you retrive all the events.
+```
+/get
+```
+e.g.
+/get
+(2) Second way is passing the value you expect from the events like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), options, and filters.
+```
+/get [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filters]
+```
+e.g.
+/get "Workout" "At Nepal Gym"
+(3) Third way is using flags. Using flags will allow you to break the order of data to be passed.
+```
+/get -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options] -f [filters]
+```
+e.g.
+/get -t "Workout"  -repeat "daily"
+
+### /update 
+If you decide to update the event using LoomCal Bot, /update would be used to delete those events.
+There are two ways of updating events.
+(1) First way is passing the values you expect the events have, so that you can pass the data to be updated like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), options, and filters and using -to flag to pass the data you want to update.
+Inshot, /update [get] -to [update]
+```
+/update [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filters] -to [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData]
+```
+e.g.
+/update "Workout" "At Nepal Gym" -to "Workout with Lunching"
+(2) Second way is using flags. Using flags will allow you to break the order of data to be passed.
+```
+/update -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options] -f [filters] -to -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData]
+```
+e.g.
+/update -t "Workout" -repeat "daily" -to -type "making-triceps"
+
+### /delete 
+If you decide to get the created events using LoomCal Bot, /delete would be used to delete those events.
+There are three ways of deleting events.
+(1) First way helps you delete all the events (With caution as it will delete all events)
+```
+/delete
+```
+e.g.
+/delete
+(2) Second way is passing the value you expect from the events so that those events could be deleted like title, description, startTime, endTime, type, repeat, color, resource, customData (Any other data which you want to include), options, and filters.
+```
+/delete [title] [description] [startTime] [endTime] [type] [repeat] [color] [resource] [customData] [options] [filters]
+```
+e.g.
+/get "Workout" "At Nepal Gym"
+(3) Third way is using flags. Using flags will allow you to break the order of data to be passed.
+```
+/delete -t [title] -d [description] -rt [startTime] [endTime] -type [type] -repeat [repeat] -color [color] -r [resource] -c [customData] -o [options] -f [filters]
+```
+e.g.
+/delete -t "Workout"  -repeat "daily"
+
+## Some Basic things that you must know.
+
+### customData
+It is literally customData that you can pass as either js object format or json object format (No Array).
+
+### -rt and -at
+- rt stands for relative time, where you need to pass the number in minutes from now (!50 represents 50 minutes before from now, 50 represents 50 minutes after from now, 0 means now).
+- at stands for absolute time, where you need to pass the string in Actual Date format.
+- Though startTime comes first and endTime comes second, you can tweak that using -s, and -e flags.
+  - e.g. -rt -e 60
+ 
+### operators
+Operators are the symbol that represent the type of comparison, logics needs to be applied for quering data.
+| Operator | Type | Description | Direct Usage Example |
+|----------|------|-------------|---------------------|
+| `$eq` | Single | Equal to | `-type $eq("meeting")` |
+| `$ne` | Single | Not equal to | `-status $ne("cancelled")` |
+| `$gt` | Single | Greater than | `-duration $gt(60)` |
+| `$gte` | Single | Greater than or equal | `-startTime $gte("2024-01-01")` |
+| `$lt` | Single | Less than | `-duration $lt(60)` |
+| `$lte` | Single | Less than or equal | `-priority $lte(3)` |
+| `$regex` | Single | Regular expression | `-t $regex("(?i)meeting")` |
+| `$exists` | Single | Field exists | `-c $exists(true)` |
+| `$not` | Single | Logical NOT | `-status $not("cancelled")` |
+| `$in` | Multi | Value in array | `-type $in("meeting", "call")` |
+| `$nin` | Multi | Value not in array | `-status $nin("cancelled", "postponed")` |
+| `$and` | Document | Logical AND | `-t $and("Meeting", $regex("(?i)team"))` |
+| `$or` | Document | Logical OR | `-priority $or("high", "urgent")` |
+
+These list of operators can be used in LoomCal. Single means they accept single argument, Multi means they accept multiple arguments, and Document means they can have another operator as their arguments.
+e.g. /get $regex("Work*")
+e.g. /get -type $nin("workout", "gym", "making-tricepts") -t $regex("W*")
+
+### Filters
+They are extended form of operators, mostly recommend using in SDK, but you can use here for complex queries.
+e.g. -f {$and: [{title: {$regex: "W*"}}, {repeat: "daily"}]}
+
+### Options
+It is a USP of LoomCal. It is the options that will be checked to store, retrive, update and delete data. Commonly, you can use limit, sortBy, sortOrder, offset for get, update and delete, and use savingRule for create.
+```
+{limit: number, offset: number, sortBy: string, sortOrder: string, savingRule: {timeBetweenDuplicates: number, uniquenessFields: string[], onDuplicate: string}}
+```
+  - limit: Limit of events you want
+  - offset: Number of events you want to skip
+  - sortBy: On the basis of what field you want to sort the events
+  - sortOrder: 'asc' will sort the events in ascending order, 'desc' will sort your events in descending order.
+  - savingRule
+    - timeBetweenDuplicates holds number, -1 represents always check the uniquenessFields, 0 represents never check the uniquenessFields, and number represents check only if the event was created within the passed time in seconds.
+    - uniquenessFields represents the fields need to be checked.
+    - onDuplicate represents the action which needs to be done. 'update' will update the most recent one, 'ignore' will silently ignore that, 'reject' (Won't work for here)
+
+isSigned isnot used here! More about options can be read in the [SDK Documentation](/src/sdk/README.md).
+
+e.g. {limit: 5, offset: 5, sortBy: "startTime", sortOrder: "desc"}
+e.g. {savingRule: {timeBetweenDuplicates: -1, uniquenessFields: ["title"], onDuplicate: "update"}}
+
+### Flags
+| Flag | Description | Usage | Example |
+|------|-------------|-------|---------|
+| `-t` | Title | `-t "Meeting Title"` | `/get -t "Team Meeting"` |
+| `-d` | Description | `-d "Meeting description"` | `/create -t "Meeting" -d "Weekly sync"` |
+| `-rt` | Relative time | `-rt 60 120` (minutes from now) | `/create -t "Meeting" -rt 30 90` |
+| `-at` | Absolute time | `-at "ISO_DATE" "ISO_DATE"` | `/create -t "Meeting" -at "2024-12-25T10:00:00Z" "2024-12-25T11:00:00Z"` |
+| `-s` | Start time | `-rt -s 60` or `-at -s "ISO_DATE"` | `/create -t "Meeting" -rt -s 60 -e 120` |
+| `-e` | End time | `-rt -e 120` or `-at -e "ISO_DATE"` | `/create -t "Meeting" -at -s "2024-12-25T10:00:00Z" -e "2024-12-25T11:00:00Z"` |
+| `-type` | Event type | `-type "meeting"` | `/get -type "work"` |
+| `-repeat` | Repeat pattern | `-repeat "weekly"` | ````/create -t "Meeting" -repeat "daily"```` |
+| `-color` | Event color | `-color "blue"` | `/update -t "Meeting" -to -color "red"` |
+| `-r` | Resource URL | `-r "https://meet.google.com/abc"` | `/create -t "Meeting" -r "https://zoom.us/j/123"` |
+| `-c` | Custom data (JSON) | `-c {"key": "value"}` | `/create -t "Meeting" -c {"priority": "high"}` |
+| `-o` | Options (JSON) | `-o {"limit": 10}` | `/get -o {"limit": 5, "sortBy": "startTime"}` |
+| `-f` | Filter (JSON) | `-f {"title": "Meeting"}` | `/get -f {"type": "meeting", "repeat": "weekly"}` |
+| `-to` | Update target | `-to -t "New Title"` | `/update -t "Old" -to -t "New" -color "green"` |
+
+## Extra Details About The Project
 
 ## Support
 
@@ -34,215 +191,10 @@ Start a conversation with [`@LoomCalBot`](https://t.me/LoomCalBot) and manage yo
 ## Acknowledgments
 
 - Inspired by modern calendar applications
-  
-##  Architecture Overview
 
-### 🤖 **Bots**
-- **Telegram Bot**: Personal and group activity tracking ([Link](https://web.telegram.org/k/#@LoomCalBot))
-  
-### **API** - RESTful & Bulk Operations
-- **RESTful Endpoints**: Standard CRUD operations for events and users
-- **Bulk Operations**: High-performance batch processing via `/api/operations/bulk`
-- **API Key Authentication**: Secure access control with rate limiting
-- **PostgreSQL Backend**: Optimized stored procedures for complex queries
+## SDK Documentation
 
-### **SDK** - TypeScript/JavaScript Client
-- **Modern TypeScript SDK**: Type-safe client with intelligent API handling
-- **Chainable Operations**: Fluent interface for complex workflows
-- **React Components**: Ready-to-use UI components with hooks
-- **Batch Processing**: Automatic optimization for multiple operations
-- 
-
-## ✨ Core Features
-
-### 🎯 **Flexible Event Model**
-- **Universal Events**:
-- **Rich Metadata**:
-- **User Relationships**:
-  - `linkedUserId` system for external integrations
-- **Time Tracking**:
-
-### � **Enterprise Security**
-- **API Key Management**: Secure authentication with scope control
-- **CORS Protection**: Origin-based access control for browser requests
-- **Rate Limiting**: Configurable limits to prevent abuse
-
-### ⚡ **High Performance**
-- **Bulk Operations**: Process thousands of events in single requests with automatic batching
-- **Query Optimization**: 
-  - MongoDB-style operators ($and, $or, $in, $exists, $regex)
-- **Database Efficiency**: 
-  - Optimized PostgreSQL stored procedures
-  - Method Chaining support, bulk operations support
-
-### � **Seamless Integrations**
-- **Bot Ecosystem**: Telegram-platform presence for diverse workflows
-- **SDK-First Design**: TypeScript SDK with React components
-- **API Compatibility**: RESTful design with predictable endpoints
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+ 
-- npm, yarn, pnpm, or bun
-- PostgreSQL database (local or hosted)
-- Supabase account (recommended) or custom PostgreSQL setup
-
-### Quick Installation
-
-1. **Clone the repository:**
-```bash
-git clone https://github.com/Enfiniq/loomcal.git
-cd loomcal
-```
-
-2. **Install dependencies:**
-```bash
-npm install
-# or
-yarn install
-```
-
-3. **Set up environment variables:**
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local` with your configuration:
-```env
-# ================================
-# LoomCal Environment Configuration
-# ================================
-
-
-# LoomCal API configuration
-NEXT_PUBLIC_LOOMCAL_BASE_URL=https://loomcal.neploom.com
-LOOMCAL_API_KEY=lc_your_loomcal_api_key_here
-
-# Supabase configuration
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
-
-# NextAuth.js secret for session encryption (generate: openssl rand -base64 32)
-NEXTAUTH_SECRET=your_nextauth_secret_here
-
-# Your application URL (production URL or http://localhost:3000 for development)
-NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_ADMIN_SECRET=your_admin_secret_here
-
-# Base URL for API calls and redirects
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
-# Allowed origins for CORS (comma-separated, no spaces)
-ALLOWED_ORIGINS=http://localhost:3000
-
-# Secret key for API key encryption/decryption (generate: openssl rand -hex 32)
-API_KEY_SECRET=your_api_key_encryption_secret_here
-```
-
-4. **Set up the database:**
-```bash
-npm run db:setup
-```
-
-5. **Start the development server:**
-```bash
-npm run dev
-```
-
-6. **Open [http://localhost:3000](http://localhost:3000)** to see your LoomCal instance running!
-
-## 📦 SDK Integration
-
-Install the LoomCal SDK in your project:
-
-```bash
-npm install @neploom/loomcal
-```
-
-### Basic Usage
-
-```typescript
-import { LoomCal } from '@neploom/loomcal';
-
-const client = new LoomCal({
-  apiKey: 'lc_your_api_key_here',
-  baseUrl: 'https://your-loomcal-instance.com'
-});
-
-// Basic event tracking
-await client.createEvents({
-  event: {
-    title: 'User Completed Onboarding',
-    type: 'milestone',
-    user: { identifier: 'user123@example.com' },
-    customData: {
-      feature: 'onboarding',
-      completionTime: 180, // seconds
-      steps: ['welcome', 'profile', 'preferences']
-    }
-  }
-}).execute();
-
-// Advanced querying with MongoDB-style operators
-const events = await client.getEvents({
-  target: {
-    $and: [
-      { type: 'milestone' },
-      { 'customData.feature': 'onboarding' },
-      { createdAt: { $gte: '2024-01-01T00:00:00Z' } },
-      { 'customData.completionTime': { $lte: 300 } }
-    ]
-  },
-  options: { 
-    limit: 50, 
-    sortBy: 'createdAt',
-    sortOrder: 'desc'
-  }
-}).execute();
-
-// Method chaining for complex operations
-const [newUser, userEvents] = await client
-  .createUsers({
-    user: {
-      identifier: 'user123',
-      email: 'user@example.com',
-      customData: { role: 'admin' }
-    }
-  })
-  .getEvents({
-    target: { 'user.identifier': 'user123' },
-    options: { limit: 10 }
-  })
-  .execute();
-```
-
-## 🧩 Component Usage
-
-LoomCal provides reusable components for integration:
-
-```jsx
-import { LoomCalProvider } from '@neploom/loomcal';
-
-function Layout({ children }) {
-  return (
-    <div>
-      <LoomCalProvider config={{
-        apiKey: process.env.LOOMCAL_API_KEY!,
-        baseUrl: process.env.NEXT_PUBLIC_LOOMCAL_BASE_URL!
-      }}>
-        {children}
-      </LoomCalProvider>
-    </div>
-  );
-}
-```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](/src/sdk/LICENSE) file for details.
-
----
+[**Partial SDK Documentation →**](/src/sdk/README.md)
+[**AI Generation Telegram Bot Documentation →**](/src/app//api//bots/telegram/_controller/lib/README.md)
 
 **Made with ❤️ by the LoomCal & NepLoom Team**
